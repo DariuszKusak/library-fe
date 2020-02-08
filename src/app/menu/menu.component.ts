@@ -11,6 +11,7 @@ export class MenuComponent implements OnInit {
 
   navLinks: Navlink[];
 
+
   constructor(private route: ActivatedRoute) {
   }
 

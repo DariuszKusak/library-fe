@@ -1,20 +1,21 @@
-import { BrowserModule } from '@angular/platform-browser';
-import { NgModule } from '@angular/core';
+import {BrowserModule} from '@angular/platform-browser';
+import {NgModule} from '@angular/core';
 
-import { AppComponent } from './app.component';
-import { BookListComponent } from './views/book-list/book-list.component';
+import {AppComponent} from './app.component';
+import {BookListComponent} from './views/book-list/book-list.component';
 import {RouterModule, Routes} from '@angular/router';
-import { PostListComponent } from './views/post-list/post-list.component';
-import { InformationComponent } from './views/information/information.component';
-import { MenuComponent } from './menu/menu.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import {MatTabsModule} from '@angular/material';
+import {PostListComponent} from './views/post-list/post-list.component';
+import {InformationComponent} from './views/information/information.component';
+import {MenuComponent} from './menu/menu.component';
+import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import {MatCardModule, MatExpansionModule, MatListModule, MatTabsModule} from '@angular/material';
 import {HttpClientModule} from '@angular/common/http';
+import { MatFormFieldModule, MatInputModule } from '@angular/material';
 
 const routes: Routes = [
-  {path : '', component : InformationComponent},
-  {path : 'books', component : BookListComponent},
-  {path : 'posts', component : PostListComponent}
+  {path: '', component: InformationComponent},
+  {path: 'books', component: BookListComponent},
+  {path: 'posts', component: PostListComponent}
 ];
 
 @NgModule({
@@ -30,9 +31,15 @@ const routes: Routes = [
     RouterModule.forRoot(routes),
     BrowserAnimationsModule,
     MatTabsModule,
-    HttpClientModule
+    HttpClientModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatExpansionModule,
+    MatListModule,
+    MatCardModule
   ],
   providers: [],
   bootstrap: [AppComponent]
 })
-export class AppModule { }
+export class AppModule {
+}

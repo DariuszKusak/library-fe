@@ -11,15 +11,16 @@ import {Subscription} from 'rxjs';
 export class BookListComponent implements OnInit, OnDestroy {
 
   books: Book[];
-
   booksSubscription: Subscription;
 
-  constructor(private dataService: DataService) { }
+  constructor(private dataService: DataService) {
+  }
 
   ngOnInit() {
     this.booksSubscription = this.dataService.getBooks().subscribe(
       books => {
         this.books = books;
+        console.log(this.books[0].description);
       }
     );
   }
