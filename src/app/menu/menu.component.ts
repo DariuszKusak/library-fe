@@ -1,4 +1,6 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Navlink} from '../model/navlink';
+import {DataService} from '../services/data.service';
 
 @Component({
   selector: 'app-menu',
@@ -7,9 +9,18 @@ import { Component, OnInit } from '@angular/core';
 })
 export class MenuComponent implements OnInit {
 
-  constructor() { }
+  navLinks: Navlink[];
+
+  constructor(private dataService: DataService) {
+  }
 
   ngOnInit() {
+    this.dataService.getNavLinks().subscribe(
+      navLinks => {
+        this.navLinks = navLinks;
+        console.log(this.navLinks);
+      }
+    );
   }
 
 }
