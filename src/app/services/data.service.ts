@@ -1,30 +1,30 @@
-import { Injectable } from '@angular/core';
-import {Navlink} from '../model/navlink';
-import {of} from 'rxjs';
+import {Injectable} from '@angular/core';
+import {HttpClient} from '@angular/common/http';
+import {Book} from '../model/Book';
+import {environment} from '../../environments/environment';
+import {map} from 'rxjs/operators';
+import {Observable} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class DataService {
 
-  constructor() { }
-
-  getNavLinks() {
-    const navLinks = new Array<Navlink>();
-
-    const navLink1 = new Navlink();
-    navLink1.label = 'About us';
-    navLink1.path = '';
-    const navLink2 = new Navlink();
-    navLink2.label = 'Catalog';
-    navLink2.path = 'books';
-    const navLink3 = new Navlink();
-    navLink3.label = 'Forum';
-    navLink3.path = 'posts';
-
-    navLinks.push(navLink1);
-    navLinks.push(navLink2);
-    navLinks.push(navLink3);
-    return of(navLinks)
+  constructor(private http: HttpClient) {
   }
+
+  getBooks(): Observable<Book[]> {
+    console.log(environment.restUrl + environment.version + 'books');
+    return this.http.get<Book[]>(environment.restUrl + environment.version + 'books').
+      pipe(
+        map( data => {
+          const books = new Array<Book>();
+          for(const bfb of data) {
+            books.push(bfb);
+          }
+          return books;
+        })
+    )
+  }
+
 }
