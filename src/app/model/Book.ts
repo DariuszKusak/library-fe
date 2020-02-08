@@ -5,4 +5,7 @@ export class Book {
   description: string;
   imageUrl: string;
   available: boolean;
+  genre: string;
+  amount: number;
+  year: number;
 }

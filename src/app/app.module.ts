@@ -8,7 +8,7 @@ import {PostListComponent} from './views/post-list/post-list.component';
 import {InformationComponent} from './views/information/information.component';
 import {MenuComponent} from './menu/menu.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatCardModule, MatExpansionModule, MatListModule, MatTabsModule} from '@angular/material';
+import {MatButtonModule, MatCardModule, MatExpansionModule, MatListModule, MatTabsModule} from '@angular/material';
 import {HttpClientModule} from '@angular/common/http';
 import { MatFormFieldModule, MatInputModule } from '@angular/material';
 
@@ -36,7 +36,8 @@ const routes: Routes = [
     MatInputModule,
     MatExpansionModule,
     MatListModule,
-    MatCardModule
+    MatCardModule,
+    MatButtonModule
   ],
   providers: [],
   bootstrap: [AppComponent]

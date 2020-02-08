@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {HttpClient} from '@angular/common/http';
 import {Book} from '../model/Book';
 import {environment} from '../../environments/environment';
@@ -13,9 +13,12 @@ export class DataService {
   constructor(private http: HttpClient) {
   }
 
+  getBookById(id: number): Observable<Book> {
+    return this.http.get<Book>(environment.restUrl + environment.version + 'books/' + id);
+  }
+
   getBooks(): Observable<Book[]> {
-    console.log(environment.restUrl + environment.version + 'books');
-    return this.http.get<Book[]>(environment.restUrl + environment.version + 'books').
+    return this.http.get<Book[]>(environment.restUrl + environment.version + 'books/all').
       pipe(
         map( data => {
           const books = new Array<Book>();
@@ -26,5 +29,24 @@ export class DataService {
         })
     )
   }
+
+  getAvailableBooks(): Observable<Book[]> {
+    return this.http.get<Array<Book>>(environment.restUrl + environment.version + 'books').
+    pipe(
+      map( data => {
+        const books = new Array<Book>();
+        for(const bfb of data) {
+          books.push(bfb);
+        }
+        return books;
+      })
+    )
+  }
+
+  borrowBook(id: number): Observable<Book> {
+    return this.http.put<Book>(environment.restUrl + environment.version + 'books/' + id, null);
+  }
+
+
 
 }

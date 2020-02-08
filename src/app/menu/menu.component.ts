@@ -23,10 +23,10 @@ export class MenuComponent implements OnInit {
     const navLinks = new Array<Navlink>();
 
     const navLink1 = new Navlink();
-    navLink1.label = 'About us';
+    navLink1.label = 'O nas';
     navLink1.path = '';
     const navLink2 = new Navlink();
-    navLink2.label = 'Catalog';
+    navLink2.label = 'Wypożyczalnia';
     navLink2.path = 'books';
     const navLink3 = new Navlink();
     navLink3.label = 'Forum';

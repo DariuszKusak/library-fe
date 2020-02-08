@@ -1,7 +1,7 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DataService} from '../../services/data.service';
 import {Book} from '../../model/Book';
-import {Subscription} from 'rxjs';
+
 
 @Component({
   selector: 'app-book-list',
@@ -11,22 +11,31 @@ import {Subscription} from 'rxjs';
 export class BookListComponent implements OnInit, OnDestroy {
 
   books: Book[];
-  booksSubscription: Subscription;
 
   constructor(private dataService: DataService) {
   }
 
   ngOnInit() {
-    this.booksSubscription = this.dataService.getBooks().subscribe(
-      books => {
-        this.books = books;
-        console.log(this.books[0].description);
+    this.loadBooks();
+  }
+
+  borrowBook(id: number) {
+    this.dataService.borrowBook(id).subscribe(
+      next => {
+        this.loadBooks();
       }
     );
   }
 
+  loadBooks() {
+    this.dataService.getAvailableBooks().subscribe(
+      books => {
+        this.books = books;
+      });
+  };
+
   ngOnDestroy(): void {
-    this.booksSubscription.unsubscribe();
+
   }
 
 }
