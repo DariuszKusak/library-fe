@@ -27,9 +27,9 @@ export class MenuComponent implements OnInit {
     navLink1.path = '';
     const navLink2 = new Navlink();
     navLink2.label = 'Wypożyczalnia';
-    navLink2.path = 'books';
+    navLink2.path = 'usersBooks';
     const navLink3 = new Navlink();
-    navLink3.label = 'Forum';
+    navLink3.label = 'Twoje ksiązki';
     navLink3.path = 'posts';
 
     navLinks.push(navLink1);

@@ -44,9 +44,12 @@ export class DataService {
   }
 
   borrowBook(id: number): Observable<Book> {
-    return this.http.put<Book>(environment.restUrl + environment.version + 'books/' + id, null);
+    return this.http.put<Book>(environment.restUrl + environment.version + 'books/' + id + '/d_user/123', null);
   }
 
+  getBooks4User(): Observable<Book[]> {
+    return this.http.get<Book[]>(environment.restUrl + environment.version + 'u2b');
+  }
 
 
 }

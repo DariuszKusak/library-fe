@@ -14,7 +14,7 @@ import { MatFormFieldModule, MatInputModule } from '@angular/material';
 
 const routes: Routes = [
   {path: '', component: InformationComponent},
-  {path: 'books', component: BookListComponent},
+  {path: 'usersBooks', component: BookListComponent},
   {path: 'posts', component: PostListComponent}
 ];
 
