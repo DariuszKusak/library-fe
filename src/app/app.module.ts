@@ -8,12 +8,21 @@ import {PostListComponent} from './views/post-list/post-list.component';
 import {InformationComponent} from './views/information/information.component';
 import {MenuComponent} from './menu/menu.component';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {MatButtonModule, MatCardModule, MatExpansionModule, MatListModule, MatTabsModule} from '@angular/material';
+import {
+  MatButtonModule,
+  MatCardModule,
+  MatExpansionModule,
+  MatFormFieldModule,
+  MatInputModule,
+  MatListModule, MatSortModule, MatTableModule,
+  MatTabsModule
+} from '@angular/material';
 import {HttpClientModule} from '@angular/common/http';
-import { MatFormFieldModule, MatInputModule } from '@angular/material';
+import {CatalogComponent} from './views/catalog/catalog.component';
 
 const routes: Routes = [
   {path: '', component: InformationComponent},
+  {path: 'catalog', component: CatalogComponent},
   {path: 'usersBooks', component: BookListComponent},
   {path: 'posts', component: PostListComponent}
 ];
@@ -24,7 +33,8 @@ const routes: Routes = [
     BookListComponent,
     PostListComponent,
     InformationComponent,
-    MenuComponent
+    MenuComponent,
+    CatalogComponent
   ],
   imports: [
     BrowserModule,
@@ -37,7 +47,9 @@ const routes: Routes = [
     MatExpansionModule,
     MatListModule,
     MatCardModule,
-    MatButtonModule
+    MatButtonModule,
+    MatSortModule,
+    MatTableModule
   ],
   providers: [],
   bootstrap: [AppComponent]

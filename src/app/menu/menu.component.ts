@@ -1,6 +1,5 @@
 import {Component, OnInit} from '@angular/core';
 import {Navlink} from '../model/navlink';
-import {ActivatedRoute} from '@angular/router';
 
 @Component({
   selector: 'app-menu',
@@ -9,33 +8,19 @@ import {ActivatedRoute} from '@angular/router';
 })
 export class MenuComponent implements OnInit {
 
-  navLinks: Navlink[];
+  navLinks: Navlink[] = [
+    {label: 'O nas', path: ''},
+    {label: 'Katalog', path: 'catalog'},
+    {label: 'Wypożyczalnia', path: 'usersBooks'},
+    {label: 'Twoje ksiązki', path: 'posts'}
+  ];
 
 
-  constructor(private route: ActivatedRoute) {
+  constructor() {
   }
 
   ngOnInit() {
-    this.navLinks = this.getNavLinks();
   }
 
-  getNavLinks() {
-    const navLinks = new Array<Navlink>();
-
-    const navLink1 = new Navlink();
-    navLink1.label = 'O nas';
-    navLink1.path = '';
-    const navLink2 = new Navlink();
-    navLink2.label = 'Wypożyczalnia';
-    navLink2.path = 'usersBooks';
-    const navLink3 = new Navlink();
-    navLink3.label = 'Twoje ksiązki';
-    navLink3.path = 'posts';
-
-    navLinks.push(navLink1);
-    navLinks.push(navLink2);
-    navLinks.push(navLink3);
-    return navLinks;
-  }
 
 }
