@@ -14,6 +14,7 @@ export class BookListComponent implements OnInit, OnDestroy {
   books: Book[];
   isBorrowMode = false;
   borrowedBook: Book;
+  message = '';
 
   constructor(private dataService: DataService,
               private route: ActivatedRoute,
@@ -26,10 +27,7 @@ export class BookListComponent implements OnInit, OnDestroy {
       params => {
         const id = params['id'];
         if (id) {
-          this.isBorrowMode = true;
           this.getBookById(id);
-        } else {
-          this.isBorrowMode = false;
         }
       }
     );
@@ -39,6 +37,7 @@ export class BookListComponent implements OnInit, OnDestroy {
     this.dataService.getBookById(id).subscribe(
       borrowedBook => {
         this.borrowedBook = borrowedBook;
+        this.isBorrowMode = true;
       }
     );
   }
@@ -47,11 +46,14 @@ export class BookListComponent implements OnInit, OnDestroy {
     this.dataService.borrowBook(id).subscribe(
       next => {
         this.loadBooks();
-        this.borrowedBook = null;
-        this.router.navigate(['catalog'])
-      }, error => {
-        if (error.error.status === 422) {
-          alert('Ksiązka została już przez Ciebie wypożyczona.')
+        this.isBorrowMode = false;
+        this.router.navigate(['usersBooks'])
+      }, (error) => {
+        if (error.error.status === 4441) {
+          this.message = error.error.error;
+        }
+        if (error.error.status === 4444) {
+          this.message = error.error.error;
         }
       }
     );

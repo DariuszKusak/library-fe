@@ -1,3 +1,5 @@
+<div class="alert-danger" *ngIf="message">{{message}}</div>
+
 <mat-card *ngIf="isBorrowMode" class="mb-5 shadow-none">
   <div class="row">
     <div class="col-sm-9">
@@ -8,7 +10,7 @@
           <mat-card-subtitle>{{borrowedBook.title}}</mat-card-subtitle>
         </mat-card-header>
         <mat-card-actions *ngIf="borrowedBook.available">
-          <button mat-stroked-button color="primary" (click)="borrowBook(borrowedBook.id)" >WYPOZYCZ</button>
+          <button mat-stroked-button color="primary" (click)="borrowBook(borrowedBook.id)" >WYPOŻYCZ</button>
         </mat-card-actions>
       </div>
       <div class="row" style="opacity: 50%">
@@ -42,7 +44,6 @@
           <p>{{book.description}}</p>
           <p><b>Gatunek:</b> {{book.genre}}</p>
           <p><b>Rok wydania:</b> {{book.year}}</p>
-          <p><b>Pozostało:</b> {{book.amount}}</p>
         </mat-card-content>
       </div>
     </div>

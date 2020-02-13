@@ -11,8 +11,8 @@ export class MenuComponent implements OnInit {
   navLinks: Navlink[] = [
     {label: 'O nas', path: ''},
     {label: 'Katalog', path: 'catalog'},
-    {label: 'Wypożyczalnia', path: 'usersBooks'},
-    {label: 'Twoje ksiązki', path: 'posts'}
+    {label: 'Twoje Książki', path: 'usersBooks'},
+    {label: 'Panel Administratora', path: 'adminPanel'}
   ];
 
 
