@@ -20,6 +20,7 @@ export class CatalogComponent implements OnInit {
   displayedColumns: string[] = [this.id, this.author, this.title, this.amount];
   sortedBooks: Book[];
   filterString = '';
+  allBooks: Book[];
 
   constructor(private dataService: DataService,
               private router: Router) {
@@ -27,15 +28,17 @@ export class CatalogComponent implements OnInit {
 
   ngOnInit(): void {
     this.getBooks();
+    this.dataService.getBooks().subscribe(
+      data => {
+        this.allBooks = data;
+      }
+    );
   }
 
   public filter(event: Event): void {
     this.filterString =  (event.target as HTMLInputElement).value;
-    if (this.filterString === '') {
-      this.getBooks();
-    }
     const filteredBooks = [];
-    for (const book of this.sortedBooks) {
+    for (const book of this.allBooks) {
       if (book.title.toLowerCase().includes(this.filterString.toLowerCase()) || book.author.toLowerCase().includes(this.filterString.toLowerCase())) {
         filteredBooks.push(book);
       }
