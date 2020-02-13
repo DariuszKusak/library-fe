@@ -1,9 +1,8 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {Book} from '../../model/Book';
 import {DataService} from '../../services/data.service';
-import {MatPaginator, Sort} from '@angular/material';
+import {Sort} from '@angular/material';
 import {Router} from '@angular/router';
-import {FormControl} from "@angular/forms";
 
 @Component({
   selector: 'app-catalog',
@@ -18,9 +17,9 @@ export class CatalogComponent implements OnInit {
   public readonly amount = 'Pozostało';
 
   displayedColumns: string[] = [this.id, this.author, this.title, this.amount];
+  startupBooks: Book[];
   sortedBooks: Book[];
   filterString = '';
-  allBooks: Book[];
 
   constructor(private dataService: DataService,
               private router: Router) {
@@ -30,15 +29,15 @@ export class CatalogComponent implements OnInit {
     this.getBooks();
     this.dataService.getBooks().subscribe(
       data => {
-        this.allBooks = data;
+        this.startupBooks = data;
       }
     );
   }
 
   public filter(event: Event): void {
-    this.filterString =  (event.target as HTMLInputElement).value;
+    this.filterString = (event.target as HTMLInputElement).value;
     const filteredBooks = [];
-    for (const book of this.allBooks) {
+    for (const book of this.startupBooks) {
       if (book.title.toLowerCase().includes(this.filterString.toLowerCase()) || book.author.toLowerCase().includes(this.filterString.toLowerCase())) {
         filteredBooks.push(book);
       }
@@ -81,8 +80,6 @@ export class CatalogComponent implements OnInit {
       }
     });
   }
-
-
 }
 
 function compare(a: number | string, b: number | string, isAsc: boolean) {
