@@ -42,7 +42,11 @@ export class DataService {
     return this.http.get<User[]>(environment.restUrl + environment.version + '/users/all');
   }
 
-  returnBook(user: User, book: Book): Observable<void>{
+  returnBook(user: User, book: Book): Observable<void> {
     return this.http.delete<void>(environment.restUrl + environment.version + 'u2b/return/' + user.login + '/' + user.password + '/' + book.id);
+  }
+
+  updateUser(user: User): Observable<User> {
+    return this.http.put<User>(environment.restUrl + environment.version + '/users', user);
   }
 }

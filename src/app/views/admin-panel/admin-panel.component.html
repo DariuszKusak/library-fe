@@ -1,6 +1,8 @@
+
+
 <div class="container">
   <div class="row">
-    <div class="col">
+    <div class="col-3">
       <table mat-table [dataSource]="sortedUsers" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)">
         <ng-container matColumnDef={{id}}>
           <th mat-header-cell *matHeaderCellDef mat-sort-header> {{id}} </th>
@@ -25,8 +27,7 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;" ></tr>
       </table>
     </div>
-    <div class="col">
-
+    <div class="col-9">
       <mat-accordion *ngIf="showUserBooks">
         <mat-expansion-panel *ngFor="let userBook of userBooks">
           <mat-expansion-panel-header>
@@ -41,19 +42,34 @@
         </mat-expansion-panel>
       </mat-accordion>
 
-
-
-      <ul *ngIf="showUserDetails">
-        <li *ngFor="let userBook of userBooks">
-          {{detailedUser.login}}
-        </li>
-      </ul>
-
+        <form [formGroup]="userForm" *ngIf="showUserDetails">
+          <div class="row">
+            <div class="col">
+              <mat-form-field class="example-full-width" >
+                <mat-label>login</mat-label>
+                <input matInput class="search-field" formControlName="userLogin"/>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width" >
+                <mat-label>hasło</mat-label>
+                <input matInput class="search-field" formControlName="userPassword"/>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <mat-form-field class="example-full-width" >
+                <mat-label>rola</mat-label>
+                <input matInput class="search-field" formControlName="userRole"/>
+              </mat-form-field>
+            </div>
+            <div class="col">
+              <button mat-stroked-button color="primary" (click)="updateUser()">Aktualizuj</button>
+            </div>
+          </div>
+        </form>
     </div>
   </div>
 </div>
-
-
 
 
 

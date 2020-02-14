@@ -22,6 +22,7 @@ import {
 import {HttpClientModule} from '@angular/common/http';
 import {CatalogComponent} from './views/catalog/catalog.component';
 import {AdminPanelComponent} from './views/admin-panel/admin-panel.component';
+import {ReactiveFormsModule} from "@angular/forms";
 
 const routes: Routes = [
   {path: '', component: InformationComponent},
@@ -53,7 +54,8 @@ const routes: Routes = [
     MatButtonModule,
     MatSortModule,
     MatTableModule,
-    MatMenuModule
+    MatMenuModule,
+    ReactiveFormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
