@@ -1,4 +1,9 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnInit} from '@angular/core';
+import {Book} from "../../model/Book";
+import {DataService} from "../../services/data.service";
+import {User} from "../../model/User";
+import {Sort} from "@angular/material";
+import {ActivatedRoute, Router} from "@angular/router";
 
 @Component({
   selector: 'app-admin-panel',
@@ -7,9 +12,88 @@ import { Component, OnInit } from '@angular/core';
 })
 export class AdminPanelComponent implements OnInit {
 
-  constructor() { }
+  userBooks: Book[];
+  sortedUsers: User[];
+  detailedUser: User;
+  showUserBooks = false;
+  showUserDetails = false;
+  currentId;
 
-  ngOnInit() {
+  public readonly id = 'Id';
+  public readonly login = 'Login';
+  public readonly password = 'Password';
+  public readonly role = 'Role';
+  panelOpenState = false;
+
+  displayedColumns: string[] = [this.id, this.login];
+
+  constructor(private dataService: DataService,
+              private router: Router,
+              private route: ActivatedRoute) {
   }
 
+  ngOnInit() {
+    this.getUsers();
+  }
+
+  userDetails(user: User) {
+    this.detailedUser = this.sortedUsers.find(usr => user.id === usr.id);
+    this.showUserBooks = false;
+    this.showUserDetails = true;
+  }
+
+  getUsers() {
+    this.dataService.getUsers().subscribe(
+      users => {
+        this.sortedUsers = users;
+      }
+    );
+  }
+
+  listUserBooks(user: User) {
+    this.dataService.getUserBooks(user).subscribe(
+      userBooks => {
+        this.userBooks = userBooks;
+      }
+    );
+    this.router.navigate(['adminPanel'], {queryParams: {id: user.id}});
+    this.showUserDetails = false;
+    this.showUserBooks = true;
+    this.currentId = user.id;
+  }
+
+  returnBook(book: Book) {
+    console.log(this.currentId);
+    const user = this.sortedUsers.find(user => user.id === this.currentId);
+    this.dataService.returnBook(user, book).subscribe(
+      data => {
+        this.listUserBooks(user);
+      }
+    );
+  }
+
+  sortData(sort: Sort) {
+    const data = this.sortedUsers.slice();
+    if (!sort.active || sort.direction === '') {
+      this.sortedUsers = data;
+      return;
+    }
+
+    this.sortedUsers = data.sort((a, b) => {
+      const isAsc = sort.direction === 'asc';
+      switch (sort.active) {
+        case this.id:
+          return compare(a.id, b.id, isAsc);
+        case this.login:
+          return compare(a.id, b.id, isAsc);
+        default:
+          return 0;
+      }
+    });
+  }
+}
+
+
+function compare(a: number | string, b: number | string, isAsc: boolean) {
+  return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
 }

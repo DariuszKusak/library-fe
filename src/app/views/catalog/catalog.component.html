@@ -1,10 +1,8 @@
 
-
 <mat-form-field class="example-full-width">
   <mat-label>Wyszukaj</mat-label>
   <input matInput class="search-field"
-         (input)="filter($event)"
-         placeholder="Wyszukaj"/>
+         (input)="filter($event)"/>
 </mat-form-field>
 
 <table mat-table [dataSource]="sortedBooks" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)">

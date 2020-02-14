@@ -1,1 +1,59 @@
-<p>admin-panel works!</p>
+<div class="container">
+  <div class="row">
+    <div class="col">
+      <table mat-table [dataSource]="sortedUsers" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)">
+        <ng-container matColumnDef={{id}}>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{id}} </th>
+          <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu">
+            {{user.id}}
+            <mat-menu #menu="matMenu">
+            <button mat-menu-item (click)="listUserBooks(user)">Wyświetl książki użytkownika</button>
+              <button mat-menu-item (click)="userDetails(user)">Wyświetl szczegóły użytkownika</button>
+          </mat-menu></td>
+        </ng-container>
+        <ng-container matColumnDef={{login}}>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{login}} </th>
+          <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu">
+            {{user.login}}
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="listUserBooks(user)">Wyświetl książki użytkownika</button>
+              <button mat-menu-item (click)="userDetails(user)">Wyświetl szczegóły użytkownika</button>
+            </mat-menu>
+          </td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;" ></tr>
+      </table>
+    </div>
+    <div class="col">
+
+      <mat-accordion *ngIf="showUserBooks">
+        <mat-expansion-panel *ngFor="let userBook of userBooks">
+          <mat-expansion-panel-header>
+            <mat-panel-title>{{userBook.author}}</mat-panel-title>
+            <mat-panel-description>{{userBook.title}}</mat-panel-description>
+          </mat-expansion-panel-header>
+          <p><b>id: </b>{{userBook.id}}</p>
+          <p><b>Rok wydania: </b>{{userBook.year}}</p>
+          <p><b>Gatunek: </b>{{userBook.genre}}</p>
+          <p><b>Ilość: </b>{{userBook.amount}}</p>
+          <button mat-stroked-button color="primary" (click)="returnBook(userBook)">Zwróć książkę</button>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+
+
+      <ul *ngIf="showUserDetails">
+        <li *ngFor="let userBook of userBooks">
+          {{detailedUser.login}}
+        </li>
+      </ul>
+
+    </div>
+  </div>
+</div>
+
+
+
+
+

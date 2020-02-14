@@ -15,14 +15,21 @@ export class BookListComponent implements OnInit, OnDestroy {
   isBorrowMode = false;
   borrowedBook: Book;
   message = '';
+  user = {
+    id: 1,
+    login: 'd_user',
+    password: '123',
+    role: 'USER'
+  };
 
   constructor(private dataService: DataService,
               private route: ActivatedRoute,
-              private router: Router) {
+              private router: Router,
+  ) {
   }
 
   ngOnInit() {
-    this.loadBooks();
+    this.loadBooks('d_user');
     this.route.queryParams.subscribe(
       params => {
         const id = params['id'];
@@ -45,7 +52,7 @@ export class BookListComponent implements OnInit, OnDestroy {
   borrowBook(id: number) {
     this.dataService.borrowBook(id).subscribe(
       next => {
-        this.loadBooks();
+        this.loadBooks('d_user');
         this.isBorrowMode = false;
         this.router.navigate(['usersBooks'])
       }, (error) => {
@@ -59,8 +66,8 @@ export class BookListComponent implements OnInit, OnDestroy {
     );
   }
 
-  loadBooks() {
-    this.dataService.getBooks4User().subscribe(
+  loadBooks(login: string) {
+    this.dataService.getUserBooks(this.user).subscribe(
       books => {
         this.books = books;
       });
