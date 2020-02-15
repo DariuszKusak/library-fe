@@ -22,13 +22,16 @@ import {
 import {HttpClientModule} from '@angular/common/http';
 import {CatalogComponent} from './views/catalog/catalog.component';
 import {AdminPanelComponent} from './views/admin-panel/admin-panel.component';
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from '@angular/forms';
+import { LoginComponent } from './views/login/login.component';
+import {AuthGuardService} from './guards/auth-guard.service';
 
 const routes: Routes = [
   {path: '', component: InformationComponent},
   {path: 'catalog', component: CatalogComponent},
-  {path: 'usersBooks', component: BookListComponent},
-  {path: 'adminPanel', component: AdminPanelComponent}
+  {path: 'usersBooks', component: BookListComponent, canActivate: [AuthGuardService]},
+  {path: 'adminPanel', component: AdminPanelComponent, canActivate: [AuthGuardService]},
+  {path: 'login', component: LoginComponent}
 ];
 
 @NgModule({
@@ -38,7 +41,8 @@ const routes: Routes = [
     InformationComponent,
     MenuComponent,
     CatalogComponent,
-    AdminPanelComponent
+    AdminPanelComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
@@ -55,7 +59,8 @@ const routes: Routes = [
     MatSortModule,
     MatTableModule,
     MatMenuModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    FormsModule
   ],
   providers: [],
   bootstrap: [AppComponent]

@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {HttpClient} from '@angular/common/http';
+import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Book} from '../model/Book';
 import {environment} from '../../environments/environment';
 import {map} from 'rxjs/operators';
@@ -47,6 +47,15 @@ export class DataService {
   }
 
   updateUser(user: User): Observable<User> {
-    return this.http.put<User>(environment.restUrl + environment.version + '/users', user);
+    return this.http.put<User>(environment.restUrl + environment.version + 'users', user);
   }
+
+  validateUser(name: string, password: string): Observable<string> {
+    const authData = btoa(`${name}:${password}`);
+    const headers = new HttpHeaders().append('Authorization', 'Basic ' + authData);
+    console.log(environment.restUrl + environment.version + 'basicAuth/validate', {headers: headers});
+    console.log(btoa(`${name}:${password}`));
+    return this.http.get<string>(environment.restUrl + environment.version + 'basicAuth/validate', {headers: headers});
+  }
+
 }
