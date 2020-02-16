@@ -6,7 +6,7 @@
   </mat-radio-group>
   </div>
   <div class="row mt-5" *ngIf="panel==='userPanel'">
-    <div class="col-3">
+    <div class="col-4">
       <table mat-table [dataSource]="sortedUsers" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)">
         <ng-container matColumnDef={{id}}>
           <th mat-header-cell *matHeaderCellDef mat-sort-header> {{id}} </th>
@@ -32,7 +32,10 @@
         <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
       </table>
     </div>
-    <div class="col-9">
+
+
+
+    <div class="col-4">
       <mat-accordion *ngIf="showUserBooks">
         <mat-expansion-panel *ngFor="let userBook of userBooks">
           <mat-expansion-panel-header>
@@ -78,6 +81,44 @@
         </div>
       </form>
     </div>
+
+
+    <div class="col-4">
+      <form [formGroup]="newUserForm">
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>login</mat-label>
+            <input matInput class="search-field" formControlName="userLogin"/>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>hasło</mat-label>
+            <input matInput class="search-field" formControlName="userPassword"/>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>rola</mat-label>
+            <input matInput class="search-field" formControlName="userRole"/>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>limit</mat-label>
+            <input matInput class="search-field" formControlName="userLimit"/>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <button mat-stroked-button color="primary" (click)="createUser()">Utwórz</button>
+        </div>
+      </form>
+    </div>
+
+
+
+
+
   </div>
 </div>
 

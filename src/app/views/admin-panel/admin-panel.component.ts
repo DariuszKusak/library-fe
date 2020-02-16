@@ -45,6 +45,13 @@ export class AdminPanelComponent implements OnInit {
     userLimit: new FormControl('')
   });
 
+  public newUserForm: FormGroup = new FormGroup({
+    userLogin: new FormControl(''),
+    userPassword: new FormControl(''),
+    userRole: new FormControl(''),
+    userLimit: new FormControl('')
+  });
+
   private get userDescriptionControl(): AbstractControl {
     return this.userForm.get('userLogin');
   }
