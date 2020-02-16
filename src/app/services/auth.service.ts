@@ -9,7 +9,7 @@ import {User} from '../model/User';
 export class AuthService {
 
   isAuthenticated = false;
-  authenticationResultEvent = new EventEmitter<string>();
+  authenticationResultEvent = new EventEmitter<boolean>();
   are2 = new EventEmitter<User>();
   jwtToken: string;
   user: User;
@@ -22,11 +22,11 @@ export class AuthService {
       next => {
         this.jwtToken = next.result;
         this.isAuthenticated = true;
-        this.authenticationResultEvent.emit(this.getRole());
+        this.authenticationResultEvent.emit(true);
         this.are2.emit(this.getUser());
       }, error => {
         this.isAuthenticated = false;
-        this.authenticationResultEvent.emit(this.getRole());
+        this.authenticationResultEvent.emit(false);
       }
     );
   }
@@ -49,6 +49,10 @@ export class AuthService {
     return JSON.parse(payload).role;
   }
 
+  logout() {
+    this.dataService.logout().subscribe();
+    this.isAuthenticated = false;
+  }
 
 
 }

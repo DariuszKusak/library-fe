@@ -19,6 +19,7 @@ export class AdminPanelComponent implements OnInit {
   showUserBooks = false;
   showUserDetails = false;
   currentId;
+  panel;
 
   public readonly id = 'Id';
   public readonly login = 'Login';
@@ -40,7 +41,8 @@ export class AdminPanelComponent implements OnInit {
   public userForm: FormGroup = new FormGroup({
     userLogin: new FormControl(''),
     userPassword: new FormControl(''),
-    userRole: new FormControl('')
+    userRole: new FormControl(''),
+    userLimit: new FormControl('')
   });
 
   private get userDescriptionControl(): AbstractControl {
@@ -52,6 +54,7 @@ export class AdminPanelComponent implements OnInit {
     this.userForm.get('userLogin').setValue(this.detailedUser.login);
     this.userForm.get('userPassword').setValue(this.detailedUser.password);
     this.userForm.get('userRole').setValue(this.detailedUser.role);
+    this.userForm.get('userLimit').setValue(this.detailedUser.bookLimit)
     this.showUserBooks = false;
     this.showUserDetails = true;
   }
@@ -60,6 +63,7 @@ export class AdminPanelComponent implements OnInit {
     this.detailedUser.login = this.userForm.get('userLogin').value;
     this.detailedUser.password = this.userForm.get('userPassword').value;
     this.detailedUser.role = this.userForm.get('userRole').value;
+    this.detailedUser.bookLimit = this.userForm.get('userLimit').value;
     this.dataService.updateUser(this.detailedUser).subscribe();
   }
 
@@ -71,7 +75,7 @@ export class AdminPanelComponent implements OnInit {
     );
   }
 
-  listUserBooks(user: User) {
+  getUserBooks(user: User) {
     this.dataService.getUserBooks(user).subscribe(
       userBooks => {
         this.userBooks = userBooks;
@@ -83,19 +87,28 @@ export class AdminPanelComponent implements OnInit {
     this.currentId = user.id;
   }
 
-  showForm() {
-    this.userDescriptionControl.setValue(this.userDescriptionControl.value);
-    console.log(this.userDescriptionControl);
-  }
-
   returnBook(book: Book) {
     console.log(this.currentId);
     const user = this.sortedUsers.find(user => user.id === this.currentId);
     this.dataService.returnBook(user, book).subscribe(
       data => {
-        this.listUserBooks(user);
+        this.getUserBooks(user);
       }
     );
+  }
+
+  deleteUser() {
+    const login = this.userForm.get('userLogin').value;
+    this.dataService.deleteUser(login).subscribe(
+      user => {
+        this.getUsers();
+      }
+    );
+
+    this.userForm.get('userLogin').setValue('');
+    this.userForm.get('userPassword').setValue('');
+    this.userForm.get('userRole').setValue('');
+    this.userForm.get('userLimit').setValue('')
   }
 
   sortData(sort: Sort) {

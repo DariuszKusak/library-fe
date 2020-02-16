@@ -14,7 +14,7 @@ import {
   MatFormFieldModule,
   MatInputModule,
   MatListModule,
-  MatMenuModule,
+  MatMenuModule, MatRadioModule,
   MatSortModule,
   MatTableModule,
   MatTabsModule
@@ -61,7 +61,8 @@ const routes: Routes = [
     MatTableModule,
     MatMenuModule,
     ReactiveFormsModule,
-    FormsModule
+    FormsModule,
+    MatRadioModule
   ],
   providers: [],
   bootstrap: [AppComponent]

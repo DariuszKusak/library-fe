@@ -27,16 +27,20 @@ export class MenuComponent implements OnInit {
   ngOnInit() {
     this.authService.authenticationResultEvent.subscribe(
       result => {
-        if (result === 'USER') {
-          this.navLinks = [this.navLink1, this.navLink2, this.navLink3, this.navLink5];
-          this.router.navigate(['usersBooks']);
-        }
-        if (result === 'ADMIN') {
-          this.navLinks = [this.navLink1, this.navLink2, this.navLink4, this.navLink5];
-          this.router.navigate(['adminPanel']);
+        if (result) {
+          const role = this.authService.getRole();
+          if (role === 'USER') {
+            this.navLinks = [this.navLink1, this.navLink2, this.navLink3, this.navLink5];
+            this.router.navigate(['usersBooks']);
+          }
+          if (role === 'ADMIN') {
+            this.navLinks = [this.navLink1, this.navLink2, this.navLink4, this.navLink5];
+            this.router.navigate(['adminPanel']);
+          }
         }
         else {
           this.message = 'Your username or login was not recognized. Try Again.';
+          this.navLinks = [this.navLink1, this.navLink2, this.navLink5];
         }
       }
     );

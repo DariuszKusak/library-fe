@@ -35,7 +35,7 @@ export class DataService {
   }
 
   returnBook(user: User, book: Book): Observable<void> {
-    return this.http.delete<void>(environment.restUrl +  'u2b/return/' + user.login + '/' + user.password + '/' + book.id);
+    return this.http.delete<void>(environment.restUrl +  'users/' + user.login + '/book/' + book.id);
   }
 
   getUserByLogin(login: string) {
@@ -47,18 +47,29 @@ export class DataService {
   }
 
   updateUser(user: User): Observable<User> {
-    return this.http.put<User>(environment.restUrl +  'users', user);
+    return this.http.put<User>(environment.restUrl +  'users', user, {withCredentials: true});
   }
 
   getUserBooks(user: User): Observable<Book[]> {
+    return this.http.get<Book[]>(environment.restUrl + 'users/' + user.login + '/books', {withCredentials: true});
+  }
+
+  getLoggedUserBooks(): Observable<Book[]> {
     return this.http.get<Book[]>(environment.restUrl + 'users/books', {withCredentials: true});
   }
 
+  deleteUser(login: string): Observable<User> {
+    return this.http.delete<User>(environment.restUrl + 'users/delete/' + login, {withCredentials: true});
+  }
 
   validateUser(name: string, password: string): Observable<{result: string}> {
     const authData = btoa(`${name}:${password}`);
     const headers = new HttpHeaders().append('Authorization', 'Basic ' + authData);
     return this.http.get<{result: string}>(environment.restUrl  + 'basicAuth/validate', {headers: headers, withCredentials: true});
+  }
+
+  logout(): Observable<string> {
+    return this.http.get<string>(environment.restUrl + 'users/logout', {withCredentials: true});
   }
 
 }

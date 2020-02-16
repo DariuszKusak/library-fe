@@ -15,8 +15,7 @@ export class LoginComponent implements OnInit {
   isAuthenticated = false;
   loggedUser;
 
-  constructor(private authService: AuthService,
-              private dataService: DataService) {
+  constructor(private authService: AuthService) {
   }
 
   ngOnInit() {
@@ -35,13 +34,15 @@ export class LoginComponent implements OnInit {
       this.loggedUser.login = this.authService.user.login;
       this.loggedUser.password = this.authService.user.password;
       this.loggedUser.role = this.authService.user.role;
+      this.loggedUser.bookLimit = this.authService.user.bookLimit;
     } else {
       return null;
     }
   }
 
   logOut() {
-
+    this.authService.logout();
+    this.loggedUser = null;
   }
 
 

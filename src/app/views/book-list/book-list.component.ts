@@ -15,12 +15,6 @@ export class BookListComponent implements OnInit, OnDestroy {
   isBorrowMode = false;
   borrowedBook: Book;
   message = '';
-  user = {
-    id: 1,
-    login: 'd_user',
-    password: '123',
-    role: 'USER'
-  };
 
   constructor(private dataService: DataService,
               private route: ActivatedRoute,
@@ -67,7 +61,7 @@ export class BookListComponent implements OnInit, OnDestroy {
   }
 
   loadBooks(login: string) {
-    this.dataService.getUserBooks(this.user).subscribe(
+    this.dataService.getLoggedUserBooks().subscribe(
       books => {
         this.books = books;
       });
