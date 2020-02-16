@@ -1,43 +1,47 @@
-import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
-import {ActivatedRoute, Router} from '@angular/router';
-import {Subscription} from 'rxjs';
+import {DataService} from '../../services/data.service';
+import {User} from '../../model/User';
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit, OnDestroy {
+export class LoginComponent implements OnInit {
 
   login: string;
   password: string;
-  message = '';
-  subscription: Subscription;
+  isAuthenticated = false;
+  loggedUser;
 
   constructor(private authService: AuthService,
-              private router: Router,
-              private route: ActivatedRoute) { }
+              private dataService: DataService) {
+  }
 
   ngOnInit() {
-    this.subscription = this.authService.authenticationResultEvent.subscribe(
-      result => {
-        if (result) {
-          const url = this.route.snapshot.queryParams['requested'];
-          this.router.navigateByUrl(url);
-        } else {
-          this.message = 'Your username or login was not recognized. Try Again.'
-        }
-      }
-    );
+    this.initLoggedUser();
   }
 
   onLogin() {
-    this.authService.authenticate(this.login, this.password)
+   this.authService.authenticate(this.login, this.password);
+   this.initLoggedUser();
   }
 
-  ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+  initLoggedUser() {
+    if(this.authService.isAuthenticated) {
+      this.loggedUser = new User();
+      this.loggedUser.id = this.authService.user.id;
+      this.loggedUser.login = this.authService.user.login;
+      this.loggedUser.password = this.authService.user.password;
+      this.loggedUser.role = this.authService.user.role;
+    } else {
+      return null;
+    }
+  }
+
+  logOut() {
+
   }
 
 

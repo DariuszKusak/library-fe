@@ -4,8 +4,7 @@
 
 export const environment = {
   production: false,
-  restUrl: 'http://localhost:8080/api/',
-  version: 'v1/'
+  restUrl: 'http://localhost:8080/api/'
 };
 
 /*

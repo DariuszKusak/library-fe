@@ -24,13 +24,14 @@ import {CatalogComponent} from './views/catalog/catalog.component';
 import {AdminPanelComponent} from './views/admin-panel/admin-panel.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import { LoginComponent } from './views/login/login.component';
-import {AuthGuardService} from './guards/auth-guard.service';
+import {UserGuardService} from './guards/user-guard.service';
+import {AdminGuardService} from './guards/admin-guard.service';
 
 const routes: Routes = [
   {path: '', component: InformationComponent},
   {path: 'catalog', component: CatalogComponent},
-  {path: 'usersBooks', component: BookListComponent, canActivate: [AuthGuardService]},
-  {path: 'adminPanel', component: AdminPanelComponent, canActivate: [AuthGuardService]},
+  {path: 'usersBooks', component: BookListComponent, canActivate: [UserGuardService]},
+  {path: 'adminPanel', component: AdminPanelComponent, canActivate: [AdminGuardService]},
   {path: 'login', component: LoginComponent}
 ];
 

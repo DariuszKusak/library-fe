@@ -3,6 +3,7 @@ import {Book} from '../../model/Book';
 import {DataService} from '../../services/data.service';
 import {Sort} from '@angular/material';
 import {Router} from '@angular/router';
+import {AuthService} from '../../services/auth.service';
 
 @Component({
   selector: 'app-catalog',
@@ -22,7 +23,8 @@ export class CatalogComponent implements OnInit {
   filterString = '';
 
   constructor(private dataService: DataService,
-              private router: Router) {
+              private router: Router,
+              private authService: AuthService) {
   }
 
   ngOnInit(): void {
@@ -53,6 +55,8 @@ export class CatalogComponent implements OnInit {
     this.dataService.getBooks().subscribe(
       data => {
         this.sortedBooks = data;
+      }, error => {
+
       }
     );
   }

@@ -1,15 +1,39 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
+import {Subscription} from 'rxjs';
+import {AuthService} from '../../services/auth.service';
+import {ActivatedRoute, Router} from '@angular/router';
 
 @Component({
   selector: 'app-information',
   templateUrl: './information.component.html',
   styleUrls: ['./information.component.css']
 })
-export class InformationComponent implements OnInit {
+export class InformationComponent implements OnInit, OnDestroy {
 
-  constructor() { }
+  login: string;
+  password: string;
+  message = '';
+  subscription: Subscription;
+
+  constructor(private authService: AuthService,
+              private router: Router,
+              private route: ActivatedRoute) { }
 
   ngOnInit() {
+    this.subscription = this.authService.authenticationResultEvent.subscribe(
+      result => {
+        if (result) {
+          const url = this.route.snapshot.queryParams['requested'];
+          this.router.navigateByUrl(url);
+        } else {
+          this.message = 'Your username or login was not recognized. Try Again.'
+        }
+      }
+    );
+  }
+
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
 }

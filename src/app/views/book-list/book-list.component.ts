@@ -49,8 +49,8 @@ export class BookListComponent implements OnInit, OnDestroy {
     );
   }
 
-  borrowBook(id: number) {
-    this.dataService.borrowBook(id).subscribe(
+  borrowBook(book: Book) {
+    this.dataService.borrowBook(book).subscribe(
       next => {
         this.loadBooks('d_user');
         this.isBorrowMode = false;

@@ -57,7 +57,6 @@ export class AdminPanelComponent implements OnInit {
   }
 
   updateUser() {
-    alert('updateUser');
     this.detailedUser.login = this.userForm.get('userLogin').value;
     this.detailedUser.password = this.userForm.get('userPassword').value;
     this.detailedUser.role = this.userForm.get('userRole').value;
