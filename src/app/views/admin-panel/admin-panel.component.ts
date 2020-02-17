@@ -1,10 +1,23 @@
 import {Component, OnInit} from '@angular/core';
-import {Book} from "../../model/Book";
-import {DataService} from "../../services/data.service";
-import {User} from "../../model/User";
-import {Sort} from "@angular/material";
-import {ActivatedRoute, Router} from "@angular/router";
-import {AbstractControl, FormControl, FormGroup} from "@angular/forms";
+import {Book} from '../../model/Book';
+import {DataService} from '../../services/data.service';
+import {User} from '../../model/User';
+import {MatTreeFlatDataSource, MatTreeFlattener, Sort} from '@angular/material';
+import {ActivatedRoute, Router} from '@angular/router';
+import {FormControl, FormGroup} from '@angular/forms';
+import {FlatTreeControl} from '@angular/cdk/tree';
+
+interface FoodNode {
+  name: string;
+  children?: FoodNode[];
+}
+
+/** Flat node with expandable and level information */
+interface ExampleFlatNode {
+  expandable: boolean;
+  name: string;
+  level: number;
+}
 
 @Component({
   selector: 'app-admin-panel',
@@ -13,13 +26,51 @@ import {AbstractControl, FormControl, FormGroup} from "@angular/forms";
 })
 export class AdminPanelComponent implements OnInit {
 
+  USER_PANEL = 'Zarządzaj użytkownikami';
+  ADD_USER = 'Dodaj użytkownika';
+  SHOW_USERS = 'Wyświetl użytkowników';
+  BOOK_PANEL = 'Zarządzaj książkami';
+  ADD_BOOK = 'Dodaj ksiazke';
+  EDIT_BOOK = 'Usuń/Edytuj książkę';
+
+  OPTION_PANEL: FoodNode[] = [
+    {
+      name: this.USER_PANEL,
+      children: [
+        {name: this.ADD_USER},
+        {name: this.SHOW_USERS}
+      ]
+    }, {
+      name: this.BOOK_PANEL,
+      children: [
+        {name: this.ADD_BOOK},
+        {name: this.EDIT_BOOK}
+      ]
+    }
+  ];
+
+  private _transformer = (node: FoodNode, level: number) => {
+    return {
+      expandable: !!node.children && node.children.length > 0,
+      name: node.name,
+      level: level,
+    };
+  };
+
+  treeControl = new FlatTreeControl<ExampleFlatNode>(
+    node => node.level, node => node.expandable);
+
+  treeFlattener = new MatTreeFlattener(
+    this._transformer, node => node.level, node => node.expandable, node => node.children);
+
+  dataSource = new MatTreeFlatDataSource(this.treeControl, this.treeFlattener);
+
   userBooks: Book[];
   sortedUsers: User[];
   detailedUser: User;
-  showUserBooks = false;
   showUserDetails = false;
-  currentId;
-  panel;
+  currentUserSelectedId;
+  nodeValue = '';
 
   public readonly id = 'Id';
   public readonly login = 'Login';
@@ -32,11 +83,18 @@ export class AdminPanelComponent implements OnInit {
   constructor(private dataService: DataService,
               private router: Router,
               private route: ActivatedRoute) {
+    this.dataSource.data = this.OPTION_PANEL;
   }
 
   ngOnInit() {
     this.getUsers();
   }
+
+  showSection(nodeValue: string) {
+    this.nodeValue = nodeValue;
+  }
+
+  hasChild = (_: number, node: ExampleFlatNode) => node.expandable;
 
   public userForm: FormGroup = new FormGroup({
     userLogin: new FormControl(''),
@@ -48,30 +106,32 @@ export class AdminPanelComponent implements OnInit {
   public newUserForm: FormGroup = new FormGroup({
     userLogin: new FormControl(''),
     userPassword: new FormControl(''),
-    userRole: new FormControl(''),
     userLimit: new FormControl('')
   });
 
-  private get userDescriptionControl(): AbstractControl {
-    return this.userForm.get('userLogin');
-  }
-
-  userDetails(user: User) {
+  getUsersDetail(user: User) {
     this.detailedUser = this.sortedUsers.find(usr => user.id === usr.id);
     this.userForm.get('userLogin').setValue(this.detailedUser.login);
     this.userForm.get('userPassword').setValue(this.detailedUser.password);
     this.userForm.get('userRole').setValue(this.detailedUser.role);
-    this.userForm.get('userLimit').setValue(this.detailedUser.bookLimit)
-    this.showUserBooks = false;
+    this.userForm.get('userLimit').setValue(this.detailedUser.bookLimit);
     this.showUserDetails = true;
+    this.getUserBooks(user);
   }
 
   updateUser() {
-    this.detailedUser.login = this.userForm.get('userLogin').value;
-    this.detailedUser.password = this.userForm.get('userPassword').value;
-    this.detailedUser.role = this.userForm.get('userRole').value;
-    this.detailedUser.bookLimit = this.userForm.get('userLimit').value;
-    this.dataService.updateUser(this.detailedUser).subscribe();
+    let user = new User();
+    user.id = this.detailedUser.id;
+    user.login = this.detailedUser.login;
+    user.password = this.userForm.get('userPassword').value;
+    user.role = this.detailedUser.role;
+    user.bookLimit = this.userForm.get('userLimit').value;
+
+    this.dataService.updateUser(user).subscribe(
+      user => {
+        this.getUsers();
+      }
+    );
   }
 
   getUsers() {
@@ -88,15 +148,12 @@ export class AdminPanelComponent implements OnInit {
         this.userBooks = userBooks;
       }
     );
-    this.router.navigate(['adminPanel'], {queryParams: {id: user.id}});
-    this.showUserDetails = false;
-    this.showUserBooks = true;
-    this.currentId = user.id;
+    this.router.navigate(['adminPanel'], {queryParams: {userId: user.id}});
+    this.currentUserSelectedId = user.id;
   }
 
   returnBook(book: Book) {
-    console.log(this.currentId);
-    const user = this.sortedUsers.find(user => user.id === this.currentId);
+    const user = this.sortedUsers.find(user => user.id === this.currentUserSelectedId);
     this.dataService.returnBook(user, book).subscribe(
       data => {
         this.getUserBooks(user);
@@ -115,7 +172,21 @@ export class AdminPanelComponent implements OnInit {
     this.userForm.get('userLogin').setValue('');
     this.userForm.get('userPassword').setValue('');
     this.userForm.get('userRole').setValue('');
-    this.userForm.get('userLimit').setValue('')
+    this.userForm.get('userLimit').setValue('');
+  }
+
+  createUser() {
+    let newUser = new User();
+    newUser.login = this.newUserForm.get('userLogin').value;
+    newUser.password = this.newUserForm.get('userPassword').value;
+    newUser.bookLimit = this.newUserForm.get('userLimit').value;
+    this.dataService.createUser(newUser).subscribe(
+      user => {
+        this.getUsers();
+        console.log(user);
+        console.log(this.sortedUsers);
+      }
+    );
   }
 
   sortData(sort: Sort) {

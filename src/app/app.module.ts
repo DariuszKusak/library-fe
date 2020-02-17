@@ -11,13 +11,13 @@ import {
   MatButtonModule,
   MatCardModule,
   MatExpansionModule,
-  MatFormFieldModule,
+  MatFormFieldModule, MatIconModule,
   MatInputModule,
   MatListModule,
   MatMenuModule, MatRadioModule,
   MatSortModule,
   MatTableModule,
-  MatTabsModule
+  MatTabsModule, MatTreeModule
 } from '@angular/material';
 import {HttpClientModule} from '@angular/common/http';
 import {CatalogComponent} from './views/catalog/catalog.component';
@@ -62,7 +62,9 @@ const routes: Routes = [
     MatMenuModule,
     ReactiveFormsModule,
     FormsModule,
-    MatRadioModule
+    MatRadioModule,
+    MatTreeModule,
+    MatIconModule
   ],
   providers: [],
   bootstrap: [AppComponent]

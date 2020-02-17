@@ -1,6 +1,5 @@
 import {EventEmitter, Injectable} from '@angular/core';
 import {DataService} from './data.service';
-import {Observable, of} from 'rxjs';
 import {User} from '../model/User';
 
 @Injectable({
@@ -32,10 +31,12 @@ export class AuthService {
   }
 
   getUser() {
-    if (this.jwtToken == null) return null;
-    const encodedPayload = this.jwtToken.split(".")[1];
+    if (this.jwtToken == null) {
+      return null;
+    }
+    const encodedPayload = this.jwtToken.split('.')[1];
     const payload = atob(encodedPayload);
-      this.dataService.getUserByLogin(JSON.parse(payload).user).subscribe(
+    this.dataService.getUserByLogin(JSON.parse(payload).user).subscribe(
       usr => {
         this.user = usr;
       }
@@ -43,8 +44,10 @@ export class AuthService {
   }
 
   getRole(): string {
-    if (this.jwtToken == null) return null;
-    const encodedPayload = this.jwtToken.split(".")[1];
+    if (this.jwtToken == null) {
+      return null;
+    }
+    const encodedPayload = this.jwtToken.split('.')[1];
     const payload = atob(encodedPayload);
     return JSON.parse(payload).role;
   }
@@ -53,6 +56,5 @@ export class AuthService {
     this.dataService.logout().subscribe();
     this.isAuthenticated = false;
   }
-
 
 }

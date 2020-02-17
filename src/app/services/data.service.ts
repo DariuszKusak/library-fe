@@ -4,7 +4,7 @@ import {Book} from '../model/Book';
 import {environment} from '../../environments/environment';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
-import {User} from "../model/User";
+import {User} from '../model/User';
 
 @Injectable({
   providedIn: 'root'
@@ -15,11 +15,11 @@ export class DataService {
   }
 
   getBookById(id: number): Observable<Book> {
-    return this.http.get<Book>(environment.restUrl  + 'books/' + id, {withCredentials: true});
+    return this.http.get<Book>(environment.restUrl + 'books/' + id, {withCredentials: true});
   }
 
   getBooks(): Observable<Book[]> {
-    return this.http.get<Book[]>(environment.restUrl  + 'books', {withCredentials: true}).pipe(
+    return this.http.get<Book[]>(environment.restUrl + 'books', {withCredentials: true}).pipe(
       map(data => {
         const books = new Array<Book>();
         for (const bfb of data) {
@@ -27,15 +27,15 @@ export class DataService {
         }
         return books;
       })
-    )
+    );
   }
 
   borrowBook(book: Book): Observable<Book> {
-    return this.http.put<Book>(environment.restUrl  + 'books', book, {withCredentials: true});
+    return this.http.put<Book>(environment.restUrl + 'books', book, {withCredentials: true});
   }
 
   returnBook(user: User, book: Book): Observable<void> {
-    return this.http.delete<void>(environment.restUrl +  'users/' + user.login + '/book/' + book.id);
+    return this.http.delete<void>(environment.restUrl + 'users/' + user.login + '/book/' + book.id, {withCredentials: true});
   }
 
   getUserByLogin(login: string) {
@@ -46,8 +46,12 @@ export class DataService {
     return this.http.get<User[]>(environment.restUrl + 'users', {withCredentials: true});
   }
 
+  createUser(user: User): Observable<User> {
+    return this.http.post<User>(environment.restUrl + 'users', user, {withCredentials: true});
+  }
+
   updateUser(user: User): Observable<User> {
-    return this.http.put<User>(environment.restUrl +  'users', user, {withCredentials: true});
+    return this.http.put<User>(environment.restUrl + 'users', user, {withCredentials: true});
   }
 
   getUserBooks(user: User): Observable<Book[]> {
@@ -62,10 +66,10 @@ export class DataService {
     return this.http.delete<User>(environment.restUrl + 'users/delete/' + login, {withCredentials: true});
   }
 
-  validateUser(name: string, password: string): Observable<{result: string}> {
+  validateUser(name: string, password: string): Observable<{ result: string }> {
     const authData = btoa(`${name}:${password}`);
     const headers = new HttpHeaders().append('Authorization', 'Basic ' + authData);
-    return this.http.get<{result: string}>(environment.restUrl  + 'basicAuth/validate', {headers: headers, withCredentials: true});
+    return this.http.get<{ result: string }>(environment.restUrl + 'basicAuth/validate', {headers: headers, withCredentials: true});
   }
 
   logout(): Observable<string> {

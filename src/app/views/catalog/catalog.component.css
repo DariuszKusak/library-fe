@@ -1,3 +1,9 @@
 table {
   width: 100%;
 }
+
+.mat-row:nth-child(odd){
+  background-color:#F8F8F8;
+}
+
+

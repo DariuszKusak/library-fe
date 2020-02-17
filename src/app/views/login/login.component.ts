@@ -1,7 +1,8 @@
 import {Component, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
-import {DataService} from '../../services/data.service';
 import {User} from '../../model/User';
+import {FlatTreeControl} from '@angular/cdk/tree';
+import {MatTreeFlatDataSource, MatTreeFlattener} from '@angular/material';
 
 @Component({
   selector: 'app-login',
@@ -10,25 +11,31 @@ import {User} from '../../model/User';
 })
 export class LoginComponent implements OnInit {
 
+
+
   login: string;
   password: string;
   isAuthenticated = false;
   loggedUser;
+  panelValue = '';
 
   constructor(private authService: AuthService) {
+
   }
+
+
 
   ngOnInit() {
     this.initLoggedUser();
   }
 
   onLogin() {
-   this.authService.authenticate(this.login, this.password);
-   this.initLoggedUser();
+    this.authService.authenticate(this.login, this.password);
+    this.initLoggedUser();
   }
 
   initLoggedUser() {
-    if(this.authService.isAuthenticated) {
+    if (this.authService.isAuthenticated) {
       this.loggedUser = new User();
       this.loggedUser.id = this.authService.user.id;
       this.loggedUser.login = this.authService.user.login;
@@ -44,6 +51,7 @@ export class LoginComponent implements OnInit {
     this.authService.logout();
     this.loggedUser = null;
   }
+
 
 
 }

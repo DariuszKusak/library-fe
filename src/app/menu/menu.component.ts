@@ -1,7 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Navlink} from '../model/navlink';
 import {AuthService} from '../services/auth.service';
-import {ActivatedRoute, Route, Router} from '@angular/router';
+import {Router} from '@angular/router';
 
 @Component({
   selector: 'app-menu',
@@ -37,8 +37,7 @@ export class MenuComponent implements OnInit {
             this.navLinks = [this.navLink1, this.navLink2, this.navLink4, this.navLink5];
             this.router.navigate(['adminPanel']);
           }
-        }
-        else {
+        } else {
           this.message = 'Your username or login was not recognized. Try Again.';
           this.navLinks = [this.navLink1, this.navLink2, this.navLink5];
         }
