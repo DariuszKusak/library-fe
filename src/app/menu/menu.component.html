@@ -1,10 +1,29 @@
-<nav mat-tab-nav-bar class="mb-5">
-  <a mat-tab-link
-    *ngFor="let link of navLinks"
-    [routerLink]="link.path"
-     routerLinkActive #rla="routerLinkActive"
-    [routerLinkActiveOptions]="{exact:true}"
-    [active]="rla.isActive">
-    {{link.label}}
-  </a>
-</nav>
+<div class="container">
+  <div class="row">
+    <div class="col-11">
+      <nav mat-tab-nav-bar class="mb-5">
+        <a mat-tab-link
+          *ngFor="let link of navLinks"
+          [routerLink]="link.path"
+           routerLinkActive #rla="routerLinkActive"
+          [routerLinkActiveOptions]="{exact:true}"
+          [active]="rla.isActive">
+          {{link.label}}
+        </a>
+      </nav>
+    </div>
+    <div class="col-1">
+      <button mat-stroked-button color="primary" (click)="onLogin()" class="mt-2" *ngIf="!loggedUser">Zaloguj
+      </button>
+      <button mat-stroked-button color="primary" [matMenuTriggerFor]="menu" *ngIf="loggedUser" class="mt-2">{{loggedUser.login}}</button>
+      <mat-menu #menu="matMenu" >
+        <button mat-menu-item>Informacje o użytkowniku</button>
+        <button mat-menu-item (click)="onLogout()">Wyloguj</button>
+      </mat-menu>
+    </div>
+
+
+  </div>
+</div>
+
+

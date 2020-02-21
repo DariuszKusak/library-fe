@@ -9,7 +9,7 @@ export class AuthService {
 
   isAuthenticated = false;
   authenticationResultEvent = new EventEmitter<boolean>();
-  are2 = new EventEmitter<User>();
+  authenticationResultUserEvent = new EventEmitter<string>();
   jwtToken: string;
   user: User;
 
@@ -21,13 +21,22 @@ export class AuthService {
       next => {
         this.jwtToken = next.result;
         this.isAuthenticated = true;
+        this.authenticationResultUserEvent.emit(this.getUserLoginFromToken());
         this.authenticationResultEvent.emit(true);
-        this.are2.emit(this.getUser());
       }, error => {
         this.isAuthenticated = false;
         this.authenticationResultEvent.emit(false);
       }
     );
+  }
+
+  getUserLoginFromToken() {
+    if (this.jwtToken == null) {
+      return null;
+    }
+    const encodedPayload = this.jwtToken.split('.')[1];
+    const payload = atob(encodedPayload);
+    return JSON.parse(payload).user;
   }
 
   getUser() {

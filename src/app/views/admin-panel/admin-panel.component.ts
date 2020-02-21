@@ -72,13 +72,15 @@ export class AdminPanelComponent implements OnInit {
   currentUserSelectedId;
   nodeValue = '';
 
-  public readonly id = 'Id';
   public readonly login = 'Login';
-  public readonly password = 'Password';
-  public readonly role = 'Role';
+  public readonly name = 'Imię';
+  public readonly lastName = 'Nazwisko';
+  public readonly email = 'Email';
+  public readonly bookLimit = 'Limit książek';
+
   panelOpenState = false;
 
-  displayedColumns: string[] = [this.id, this.login];
+  displayedColumns: string[] = [this.login, this.name, this.lastName, this.email, this.bookLimit];
 
   constructor(private dataService: DataService,
               private router: Router,
@@ -98,22 +100,27 @@ export class AdminPanelComponent implements OnInit {
 
   public userForm: FormGroup = new FormGroup({
     userLogin: new FormControl(''),
-    userPassword: new FormControl(''),
-    userRole: new FormControl(''),
-    userLimit: new FormControl('')
+    userName: new FormControl(''),
+    userLastName: new FormControl(''),
+    userEmail: new FormControl(''),
+    userBookLimit: new FormControl('')
   });
 
   public newUserForm: FormGroup = new FormGroup({
-    userLogin: new FormControl(''),
-    userPassword: new FormControl(''),
-    userLimit: new FormControl('')
+    newUserLogin: new FormControl(''),
+    newUserName: new FormControl(''),
+    newUserLastName: new FormControl(''),
+    newUserEmail: new FormControl(''),
+    newUserBookLimit: new FormControl(''),
+    newUserPassword: new FormControl('')
   });
 
   getUsersDetail(user: User) {
     this.detailedUser = this.sortedUsers.find(usr => user.id === usr.id);
     this.userForm.get('userLogin').setValue(this.detailedUser.login);
-    this.userForm.get('userPassword').setValue(this.detailedUser.password);
-    this.userForm.get('userRole').setValue(this.detailedUser.role);
+    this.userForm.get('userName').setValue(this.detailedUser.name);
+    this.userForm.get('userLastName').setValue(this.detailedUser.lastName);
+    this.userForm.get('userEmail').setValue(this.detailedUser.email);
     this.userForm.get('userLimit').setValue(this.detailedUser.bookLimit);
     this.showUserDetails = true;
     this.getUserBooks(user);
@@ -123,10 +130,10 @@ export class AdminPanelComponent implements OnInit {
     let user = new User();
     user.id = this.detailedUser.id;
     user.login = this.detailedUser.login;
-    user.password = this.userForm.get('userPassword').value;
-    user.role = this.detailedUser.role;
+    user.name = this.userForm.get('userName').value;
+    user.lastName = this.userForm.get('userLastName').value;
+    user.email = this.userForm.get('userEmail').value;
     user.bookLimit = this.userForm.get('userLimit').value;
-
     this.dataService.updateUser(user).subscribe(
       user => {
         this.getUsers();
@@ -177,9 +184,11 @@ export class AdminPanelComponent implements OnInit {
 
   createUser() {
     let newUser = new User();
-    newUser.login = this.newUserForm.get('userLogin').value;
-    newUser.password = this.newUserForm.get('userPassword').value;
-    newUser.bookLimit = this.newUserForm.get('userLimit').value;
+    newUser.login = this.newUserForm.get('newUserLogin').value;
+    newUser.name = this.newUserForm.get('newUserName').value;
+    newUser.lastName = this.newUserForm.get('newUserLastName').value;
+    newUser.email = this.newUserForm.get('newUserEmail').value;
+    newUser.bookLimit = this.newUserForm.get('newUserLimit').value;
     this.dataService.createUser(newUser).subscribe(
       user => {
         this.getUsers();
@@ -199,9 +208,15 @@ export class AdminPanelComponent implements OnInit {
     this.sortedUsers = data.sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
-        case this.id:
-          return compare(a.id, b.id, isAsc);
         case this.login:
+          return compare(a.id, b.id, isAsc);
+        case this.name:
+          return compare(a.id, b.id, isAsc);
+        case this.lastName:
+          return compare(a.id, b.id, isAsc);
+        case this.email:
+          return compare(a.id, b.id, isAsc);
+        case this.bookLimit:
           return compare(a.id, b.id, isAsc);
         default:
           return 0;

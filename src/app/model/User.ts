@@ -1,8 +1,9 @@
 export class User {
   id: number;
   login: string;
-  password: string;
-  role: string;
-  bookLimit: number;
+  name: string;
+  lastName: string;
+  email: string;
+  bookLimit: string;
 }
 

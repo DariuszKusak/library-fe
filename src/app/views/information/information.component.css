@@ -1,0 +1,17 @@
+.image1 {
+  height: 300px;
+  weight: 300px;
+  background-image: url('https://okruchy.pl/wp-content/uploads/2016/06/Biblioteka-Georgea-Peabodyego.jpg');
+  background-size: cover;
+  background-position: center center;
+}
+
+.image2 {
+  height: 300px;
+  weight: 300px;
+  background-image: url('https://okruchy.pl/wp-content/uploads/2016/06/Biblioteka-Trinity-College.jpg');
+  background-size: cover;
+  background-position: center center;
+}
+
+

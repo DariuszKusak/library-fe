@@ -11,9 +11,12 @@ import {ActivatedRoute, Router} from '@angular/router';
 export class InformationComponent implements OnInit, OnDestroy {
 
   login: string;
-  password: string;
   message = '';
   subscription: Subscription;
+  name: string;
+  surname: string;
+  subject: string;
+  msg: string;
 
   constructor(private authService: AuthService,
               private router: Router,
@@ -34,6 +37,10 @@ export class InformationComponent implements OnInit, OnDestroy {
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  onMail() {
+
   }
 
 }

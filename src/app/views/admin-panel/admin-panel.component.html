@@ -1,5 +1,5 @@
 <div class="container">
-  <div class="row mt-5">
+  <div class="row">
     <div class="col-4">
       <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
         <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
@@ -80,24 +80,20 @@
     </div>
   </div>
   <div class="row mt-5">
-    <div class="col-3">
+    <div class="col-2">
       <div *ngIf="nodeValue===SHOW_USERS">
         <table mat-table [dataSource]="sortedUsers" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)">
-          <ng-container matColumnDef={{id}}>
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{id}} </th>
-            <td mat-cell *matCellDef="let user" style="cursor: pointer" (click)="getUsersDetail(user)">{{user.id}}</td>
-          </ng-container>
           <ng-container matColumnDef={{login}}>
             <th mat-header-cell *matHeaderCellDef mat-sort-header> {{login}} </th>
-            <td mat-cell *matCellDef="let user" style="cursor: pointer" (click)="getUsersDetail(user)">{{user.login}}</td>
+            <td mat-cell *matCellDef="let user" style="cursor: pointer"
+                (click)="getUsersDetail(user)">{{user.login}}</td>
           </ng-container>
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
       </div>
     </div>
-  </div>
-    <div class="col-9">
+    <div class="col-10">
       <mat-accordion *ngIf="nodeValue==SHOW_USERS && showUserDetails">
         <mat-expansion-panel *ngFor="let userBook of userBooks">
           <mat-expansion-panel-header>
@@ -113,3 +109,4 @@
       </mat-accordion>
     </div>
   </div>
+</div>
