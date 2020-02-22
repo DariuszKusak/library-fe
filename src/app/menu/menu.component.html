@@ -17,7 +17,7 @@
       </button>
       <button mat-stroked-button color="primary" [matMenuTriggerFor]="menu" *ngIf="loggedUser" class="mt-2">{{loggedUser.login}}</button>
       <mat-menu #menu="matMenu" >
-        <button mat-menu-item>Informacje o użytkowniku</button>
+        <button mat-menu-item (click)="navigateToUserInfo()">{{infoLogin}}</button>
         <button mat-menu-item (click)="onLogout()">Wyloguj</button>
       </mat-menu>
     </div>

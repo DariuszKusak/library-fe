@@ -2,7 +2,7 @@ import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DataService} from '../../services/data.service';
 import {Book} from '../../model/Book';
 import {ActivatedRoute, Router} from '@angular/router';
-
+import {Subscription} from 'rxjs';
 
 @Component({
   selector: 'app-book-list',
@@ -10,65 +10,25 @@ import {ActivatedRoute, Router} from '@angular/router';
   styleUrls: ['./book-list.component.css']
 })
 export class BookListComponent implements OnInit, OnDestroy {
-
   books: Book[];
-  isBorrowMode = false;
-  borrowedBook: Book;
-  message = '';
+  booksSubscription: Subscription;
 
-  constructor(private dataService: DataService,
-              private route: ActivatedRoute,
-              private router: Router,
-  ) {
+  constructor(private dataService: DataService) {
   }
 
   ngOnInit() {
-    this.loadBooks('d_user');
-    this.route.queryParams.subscribe(
-      params => {
-        const id = params['id'];
-        if (id) {
-          this.getBookById(id);
-        }
-      }
-    );
+    this.loadBooks();
   }
 
-  private getBookById(id: number) {
-    this.dataService.getBookById(id).subscribe(
-      borrowedBook => {
-        this.borrowedBook = borrowedBook;
-        this.isBorrowMode = true;
-      }
-    );
-  }
-
-  borrowBook(book: Book) {
-    this.dataService.borrowBook(book).subscribe(
-      next => {
-        this.loadBooks('d_user');
-        this.isBorrowMode = false;
-        this.router.navigate(['usersBooks'])
-      }, (error) => {
-        if (error.error.status === 4441) {
-          this.message = error.error.error;
-        }
-        if (error.error.status === 4444) {
-          this.message = error.error.error;
-        }
-      }
-    );
-  }
-
-  loadBooks(login: string) {
-    this.dataService.getLoggedUserBooks().subscribe(
+  loadBooks() {
+    this.booksSubscription = this.dataService.getLoggedUserBooks().subscribe(
       books => {
         this.books = books;
       });
   };
 
   ngOnDestroy(): void {
-
+    this.booksSubscription.unsubscribe();
   }
 
 }

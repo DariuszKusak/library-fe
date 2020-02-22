@@ -1,0 +1,40 @@
+<div class="container">
+  <div class="row">
+    <div class="alert alert-primary" role="alert" *ngIf="message">{{message}}</div>
+  </div>
+  <div class="row">
+    <mat-card class="mb-5 shadow-none" *ngIf="detailedBook">
+      <div class="row">
+        <div class="col-sm-9">
+          <div class="row">
+            <mat-card-header>
+              <div mat-card-avatar class="example-header-image"></div>
+              <mat-card-title>{{detailedBook.author}}</mat-card-title>
+              <mat-card-subtitle>{{detailedBook.title}}</mat-card-subtitle>
+            </mat-card-header>
+          </div>
+          <div class="row">
+            <mat-card-content>
+              <p>{{detailedBook.description}}</p>
+              <p><b>Gatunek:</b> {{detailedBook.genre}}</p>
+              <p><b>Rok wydania:</b> {{detailedBook.year}}</p>
+              <p><b>Pozostało:</b> {{detailedBook.amount}}</p>
+            </mat-card-content>
+          </div>
+        </div>
+        <div class="col-sm-3">
+          <img mat-card-image src="{{detailedBook.imageUrl}}" class="w-75 mt-2 mr-2 float-right">
+        </div>
+      </div>
+      <mat-card-actions>
+        <div class="mr-3" *ngIf="detailedBook.available">
+          <button mat-stroked-button color="primary" (click)="borrowBook(detailedBook)">Wypożycz</button>
+        </div>
+        <div>
+          <button mat-stroked-button color="primary" (click)="returnToCatalog()">Wróć</button>
+        </div>
+      </mat-card-actions>
+    </mat-card>
+  </div>
+</div>
+

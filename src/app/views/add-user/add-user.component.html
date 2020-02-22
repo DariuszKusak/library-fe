@@ -1,0 +1,44 @@
+<div class="container">
+  <div class="row">
+    <div class="alert alert-primary" role="alert" *ngIf="message">{{message}}</div>
+  </div>
+  <form [formGroup]="newUserForm">
+    <div class="row">
+      <mat-form-field class="example-full-width">
+        <mat-label>Login</mat-label>
+        <input matInput class="search-field" formControlName="newUserLogin"/>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field class="example-full-width">
+        <mat-label>Hasło</mat-label>
+        <input matInput class="search-field" formControlName="newUserPassword" [type]="hidePassword ? 'password' : 'text'" />
+        <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
+          <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+        </button>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field class="example-full-width">
+        <mat-label>Imię</mat-label>
+        <input matInput class="search-field" formControlName="newUserName"/>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field class="example-full-width">
+        <mat-label>Nazwisko</mat-label>
+        <input matInput class="search-field" formControlName="newUserLastName"/>
+      </mat-form-field>
+    </div>
+    <div class="row">
+      <mat-form-field class="example-full-width">
+        <mat-label>Limit książęk</mat-label>
+        <input matInput class="search-field" formControlName="newUserBookLimit"/>
+      </mat-form-field>
+    </div>
+  </form>
+  <div class="row mt-3">
+    <div><button mat-stroked-button color="primary" (click)="createUser()">Utwórz</button></div>
+    <div class="ml-3"><button mat-stroked-button color="primary" (click)="return()">Powrót</button></div>
+  </div>
+</div>

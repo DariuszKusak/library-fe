@@ -5,5 +5,6 @@ export class User {
   lastName: string;
   email: string;
   bookLimit: string;
+  admin: boolean;
 }
 

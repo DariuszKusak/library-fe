@@ -1,3 +1,11 @@
-.mat-radio-button ~ .mat-radio-button {
-  margin-left: 16px;
+table {
+  width: 100%;
+}
+
+.mat-cell {
+  padding: 20px 20px 20px 0;
+}
+
+.mat-row:nth-child(even){
+  background-color:#F8F8F8;
 }

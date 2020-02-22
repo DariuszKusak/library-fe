@@ -1,112 +1,138 @@
 <div class="container">
+
   <div class="row">
-    <div class="col-4">
-      <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
-        <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
-          <button mat-icon-button disabled></button>
-          <div (click)="showSection(node.name)" style="cursor: pointer">
-            {{node.name}}
-          </div>
-        </mat-tree-node>
-        <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
-          <button mat-icon-button matTreeNodeToggle
-                  [attr.aria-label]="'toggle ' + node.name">
-            <mat-icon class="mat-icon-rtl-mirror">
-              {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
-            </mat-icon>
-          </button>
+    <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+      <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+        <button mat-icon-button disabled></button>
+        <div (click)="navigateSection(node.name)" style="cursor: pointer">
           {{node.name}}
-        </mat-tree-node>
-      </mat-tree>
-    </div>
-    <div class="col-8">
-      <div *ngIf="nodeValue===ADD_USER">
-        <form [formGroup]="newUserForm">
-          <div class="row">
-            <mat-form-field class="example-full-width">
-              <mat-label>login</mat-label>
-              <input matInput class="search-field" formControlName="userLogin"/>
-            </mat-form-field>
-          </div>
-          <div class="row">
-            <mat-form-field class="example-full-width">
-              <mat-label>hasło</mat-label>
-              <input matInput class="search-field" formControlName="userPassword"/>
-            </mat-form-field>
-          </div>
-          <div class="row">
-            <mat-form-field class="example-full-width">
-              <mat-label>limit</mat-label>
-              <input matInput class="search-field" formControlName="userLimit"/>
-            </mat-form-field>
-          </div>
-          <div class="row">
-            <button mat-stroked-button color="primary" (click)="createUser()">Utwórz</button>
-          </div>
-        </form>
-      </div>
-      <div class="col-3">
-        <form [formGroup]="userForm" *ngIf="nodeValue===SHOW_USERS && showUserDetails">
-          <div class="row">
-            <mat-form-field class="example-full-width">
-              <mat-label>login</mat-label>
-              <input matInput class="search-field" formControlName="userLogin" readonly/>
-            </mat-form-field>
-          </div>
-          <div class="row">
-            <mat-form-field class="example-full-width">
-              <mat-label>hasło</mat-label>
-              <input matInput class="search-field" formControlName="userPassword"/>
-            </mat-form-field>
-          </div>
-          <div class="row">
-            <mat-form-field class="example-full-width">
-              <mat-label>rola</mat-label>
-              <input matInput class="search-field" formControlName="userRole" readonly/>
-            </mat-form-field>
-          </div>
-          <div class="row">
-            <mat-form-field class="example-full-width">
-              <mat-label>limit</mat-label>
-              <input matInput class="search-field" formControlName="userLimit"/>
-            </mat-form-field>
-          </div>
-          <div class="row">
-            <button mat-stroked-button color="primary" (click)="updateUser()">Aktualizuj</button>
-            <button mat-stroked-button color="primary" (click)="deleteUser()">Usuń</button>
-          </div>
-        </form>
-      </div>
-    </div>
+        </div>
+      </mat-tree-node>
+      <mat-tree-node *matTreeNodeDef="let node;when: hasChild" matTreeNodePadding>
+        <button mat-icon-button matTreeNodeToggle [attr.aria-label]="'toggle ' + node.name">
+          <mat-icon class="mat-icon-rtl-mirror">
+            {{treeControl.isExpanded(node) ? 'expand_more' : 'chevron_right'}}
+          </mat-icon>
+        </button>
+        {{node.name}}
+      </mat-tree-node>
+    </mat-tree>
   </div>
+
+
   <div class="row mt-5">
-    <div class="col-2">
-      <div *ngIf="nodeValue===SHOW_USERS">
-        <table mat-table [dataSource]="sortedUsers" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)">
-          <ng-container matColumnDef={{login}}>
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> {{login}} </th>
-            <td mat-cell *matCellDef="let user" style="cursor: pointer"
-                (click)="getUsersDetail(user)">{{user.login}}</td>
-          </ng-container>
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
-      </div>
-    </div>
-    <div class="col-10">
-      <mat-accordion *ngIf="nodeValue==SHOW_USERS && showUserDetails">
-        <mat-expansion-panel *ngFor="let userBook of userBooks">
-          <mat-expansion-panel-header>
-            <mat-panel-title>{{userBook.author}}</mat-panel-title>
-            <mat-panel-description>{{userBook.title}}</mat-panel-description>
-          </mat-expansion-panel-header>
-          <p><b>id: </b>{{userBook.id}}</p>
-          <p><b>Rok wydania: </b>{{userBook.year}}</p>
-          <p><b>Gatunek: </b>{{userBook.genre}}</p>
-          <p><b>Ilość: </b>{{userBook.amount}}</p>
-          <button mat-stroked-button color="primary" (click)="returnBook(userBook)">Zwróć książkę</button>
-        </mat-expansion-panel>
-      </mat-accordion>
+    <div *ngIf="nodeValue===SHOW_USERS">
+      <table mat-table [dataSource]="sortedUsers" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)">
+        <ng-container matColumnDef={{login}}>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{login}} </th>
+            <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu">
+              <mat-menu #menu="matMenu">
+                <button mat-menu-item (click)="getUserBooks(user)">Wyświetl książki użytkownika</button>
+                <button mat-menu-item (click)="getUsersDetail(user)">Wyświetl dane użytkownika</button>
+              </mat-menu>
+              {{user.login}}</td>
+        </ng-container>
+        <ng-container matColumnDef={{name}}>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{name}} </th>
+          <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu"
+              (click)="getUsersDetail(user)">
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="getUserBooks(user)">Wyświetl książki użytkownika</button>
+              <button mat-menu-item (click)="getUsersDetail(user)">Wyświetl dane użytkownika</button>
+            </mat-menu>
+            {{user.name}}</td>
+        </ng-container>
+        <ng-container matColumnDef={{lastName}}>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{lastName}} </th>
+          <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu"
+              (click)="getUsersDetail(user)">
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="getUserBooks(user)">Wyświetl książki użytkownika</button>
+              <button mat-menu-item (click)="getUsersDetail(user)">Wyświetl dane użytkownika</button>
+            </mat-menu>
+            {{user.lastName}}</td>
+        </ng-container>
+        <ng-container matColumnDef={{email}}>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{email}} </th>
+          <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu"
+              (click)="getUsersDetail(user)">
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="getUserBooks(user)">Wyświetl książki użytkownika</button>
+              <button mat-menu-item (click)="getUsersDetail(user)">Wyświetl dane użytkownika</button>
+            </mat-menu>
+            {{user.email}}</td>
+        </ng-container>
+        <ng-container matColumnDef={{bookLimit}}>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{bookLimit}} </th>
+          <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu"
+              (click)="getUsersDetail(user)">
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="getUserBooks(user)">Wyświetl książki użytkownika</button>
+              <button mat-menu-item (click)="getUsersDetail(user)">Wyświetl dane użytkownika</button>
+            </mat-menu>
+            {{user.bookLimit}}</td>
+        </ng-container>
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+      </table>
     </div>
   </div>
+
+  <div class="row mt-5">
+    <mat-accordion *ngIf="nodeValue==SHOW_USERS && showBookDetails">
+      <mat-expansion-panel *ngFor="let userBook of userBooks">
+        <mat-expansion-panel-header>
+          <mat-panel-title>{{userBook.author}}</mat-panel-title>
+          <mat-panel-description>{{userBook.title}}</mat-panel-description>
+        </mat-expansion-panel-header>
+        <p><b>id: </b>{{userBook.id}}</p>
+        <p><b>Rok wydania: </b>{{userBook.year}}</p>
+        <p><b>Gatunek: </b>{{userBook.genre}}</p>
+        <p><b>Ilość: </b>{{userBook.amount}}</p>
+        <button mat-stroked-button color="primary" (click)="returnBook(userBook)">Zwróć książkę</button>
+      </mat-expansion-panel>
+    </mat-accordion>
+  </div>
+
+  <div class="row mb-5">
+    <div class="col">
+      <form [formGroup]="userForm" *ngIf="nodeValue===SHOW_USERS && showUserDetails">
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>Login</mat-label>
+            <input matInput class="search-field" formControlName="userLogin" readonly/>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>Imię</mat-label>
+            <input matInput class="search-field" formControlName="userName"/>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>Nazwisko</mat-label>
+            <input matInput class="search-field" formControlName="userLastName"/>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>Email</mat-label>
+            <input matInput class="search-field" formControlName="userEmail" readonly/>
+          </mat-form-field>
+        </div>
+        <div class="row">
+          <mat-form-field class="example-full-width">
+            <mat-label>Limit książek</mat-label>
+            <input matInput class="search-field" formControlName="userBookLimit"/>
+          </mat-form-field>
+        </div>
+        <div class="row mt-3">
+          <button mat-stroked-button color="primary" (click)="updateUser()">Aktualizuj</button>
+          <button class="ml-3" mat-stroked-button color="primary" (click)="deleteUser()">Usuń</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
 </div>

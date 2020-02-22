@@ -20,6 +20,7 @@ export class MenuComponent implements OnInit {
 
   message = '';
   loginValue = 'Zaloguj';
+  infoLogin = '';
   loggedUser = null;
 
   constructor(private authService: AuthService,
@@ -59,6 +60,11 @@ export class MenuComponent implements OnInit {
       user => {
         this.loggedUser = user;
         this.loginValue = user.login;
+        if (user.admin) {
+          this.infoLogin = "Informacje o administratorze";
+        } else {
+          this.infoLogin = "Informacje o użytkowniku";
+        }
       }
     );
   }
@@ -73,5 +79,9 @@ export class MenuComponent implements OnInit {
       this.loginValue = 'Zaloguj';
       this.navLinks = [this.navLink1, this.navLink2];
       this.router.navigate(['login']);
+  }
+
+  navigateToUserInfo() {
+    this.router.navigate(['userInformation'], {queryParams: {userLogin: this.loggedUser.login}});
   }
 }

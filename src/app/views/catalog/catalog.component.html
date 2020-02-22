@@ -1,29 +1,26 @@
+<div class="container">
+  <mat-form-field>
+    <mat-label>Wyszukaj</mat-label>
+    <input matInput (keyup)="applyFilter($event)" placeholder="Szukana fraza">
+  </mat-form-field>
+  <table mat-table [dataSource]="bookDataSource" matSort class="mat-elevation-z8 mt-2">
+    <ng-container matColumnDef={{author}}>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Autor </th>
+      <td mat-cell *matCellDef="let book" (click)="bookDetails(book.id)" style="cursor: pointer" [class.text-danger]="book.amount<1"> {{book.author}} </td>
+    </ng-container>
+    <ng-container matColumnDef={{title}}>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header> Tytuł </th>
+      <td mat-cell *matCellDef="let book" (click)="bookDetails(book.id)" style="cursor: pointer" [class.text-danger]="book.amount<1"> {{book.title}} </td>
+    </ng-container>
+    <ng-container matColumnDef={{amount}}>
+      <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center"> Pozostało </th>
+      <td mat-cell *matCellDef="let book" (click)="bookDetails(book.amount)" style="cursor: pointer" [class.text-danger]="book.amount<1"> {{book.amount}} </td>
+    </ng-container>
+    <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+    <tr mat-row *matRowDef="let row; columns: displayedColumns; "></tr>
+  </table>
 
-<mat-form-field class="example-full-width">
-  <mat-label>Wyszukaj</mat-label>
-  <input matInput class="search-field"
-         (input)="filter($event)"/>
-</mat-form-field>
-
-<table mat-table [dataSource]="sortedBooks" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)">
-  <ng-container matColumnDef={{id}}>
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{id}} </th>
-    <td mat-cell *matCellDef="let book" (click)="bookDetails(book.id)" style="cursor: pointer" [class.text-danger]="book.amount<1"> {{book.id}} </td>
-  </ng-container>
-  <ng-container matColumnDef={{author}}>
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{author}} </th>
-    <td mat-cell *matCellDef="let book" (click)="bookDetails(book.id)" style="cursor: pointer" [class.text-danger]="book.amount<1"> {{book.author}} </td>
-  </ng-container>
-  <ng-container matColumnDef={{title}}>
-    <th mat-header-cell *matHeaderCellDef mat-sort-header> {{title}} </th>
-    <td mat-cell *matCellDef="let book" (click)="bookDetails(book.id)" style="cursor: pointer" [class.text-danger]="book.amount<1"> {{book.title}} </td>
-  </ng-container>
-  <ng-container matColumnDef={{amount}}>
-    <th mat-header-cell *matHeaderCellDef mat-sort-header class="text-center"> {{amount}} </th>
-    <td mat-cell *matCellDef="let book" (click)="bookDetails(book.amount)" style="cursor: pointer" [class.text-danger]="book.amount<1"> {{book.amount}} </td>
-  </ng-container>
-  <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-  <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-</table>
+  <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+</div>
 
 

@@ -11,28 +11,41 @@ import {
   MatButtonModule,
   MatCardModule,
   MatExpansionModule,
-  MatFormFieldModule, MatIconModule,
+  MatFormFieldModule,
+  MatIconModule,
   MatInputModule,
   MatListModule,
-  MatMenuModule, MatRadioModule,
+  MatMenuModule,
+  MatPaginatorModule,
+  MatRadioModule,
+  MatSidenavModule,
   MatSortModule,
   MatTableModule,
-  MatTabsModule, MatToolbarModule, MatTreeModule
+  MatTabsModule,
+  MatToolbarModule,
+  MatTreeModule
 } from '@angular/material';
 import {HttpClientModule} from '@angular/common/http';
 import {CatalogComponent} from './views/catalog/catalog.component';
 import {AdminPanelComponent} from './views/admin-panel/admin-panel.component';
 import {FormsModule, ReactiveFormsModule} from '@angular/forms';
-import { LoginComponent } from './views/login/login.component';
-import {UserGuardService} from './guards/user-guard.service';
+import {LoginComponent} from './views/login/login.component';
+import {UserInformationComponent} from './views/user-information/user-information.component';
+import {BookDetailsComponent} from './views/book-details/book-details.component';
+import {AddUserComponent} from './views/add-user/add-user.component';
 import {AdminGuardService} from './guards/admin-guard.service';
+import {AdminUserGuardService} from './guards/admin-user-guard.service';
+import {UserGuardService} from './guards/user-guard.service';
 
 const routes: Routes = [
   {path: '', component: InformationComponent},
   {path: 'catalog', component: CatalogComponent},
   {path: 'usersBooks', component: BookListComponent, canActivate: [UserGuardService]},
   {path: 'adminPanel', component: AdminPanelComponent, canActivate: [AdminGuardService]},
-  {path: 'login', component: LoginComponent}
+  {path: 'login', component: LoginComponent},
+  {path: 'userInformation', component: UserInformationComponent, canActivate: [AdminUserGuardService]},
+  {path: 'bookDetails', component: BookDetailsComponent, canActivate: [UserGuardService]},
+  {path: 'addUser', component: AddUserComponent}
 ];
 
 @NgModule({
@@ -43,7 +56,10 @@ const routes: Routes = [
     MenuComponent,
     CatalogComponent,
     AdminPanelComponent,
-    LoginComponent
+    LoginComponent,
+    UserInformationComponent,
+    BookDetailsComponent,
+    AddUserComponent
   ],
   imports: [
     BrowserModule,
@@ -65,7 +81,10 @@ const routes: Routes = [
     MatRadioModule,
     MatTreeModule,
     MatIconModule,
-    MatToolbarModule
+    MatToolbarModule,
+    MatSidenavModule,
+    MatPaginatorModule
+
   ],
   providers: [],
   bootstrap: [AppComponent]

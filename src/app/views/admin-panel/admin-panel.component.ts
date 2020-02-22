@@ -27,7 +27,7 @@ interface ExampleFlatNode {
 export class AdminPanelComponent implements OnInit {
 
   USER_PANEL = 'Zarządzaj użytkownikami';
-  ADD_USER = 'Dodaj użytkownika';
+  ADD_USER = 'Utwórz użytkownika';
   SHOW_USERS = 'Wyświetl użytkowników';
   BOOK_PANEL = 'Zarządzaj książkami';
   ADD_BOOK = 'Dodaj ksiazke';
@@ -69,31 +69,35 @@ export class AdminPanelComponent implements OnInit {
   sortedUsers: User[];
   detailedUser: User;
   showUserDetails = false;
+  showBookDetails = false;
   currentUserSelectedId;
   nodeValue = '';
 
+  panelOpenState = false;
+
+  constructor(private dataService: DataService,
+              private router: Router) {
+    this.dataSource.data = this.OPTION_PANEL;
+  }
+
   public readonly login = 'Login';
-  public readonly name = 'Imię';
+  public readonly name = 'Imie';
   public readonly lastName = 'Nazwisko';
   public readonly email = 'Email';
   public readonly bookLimit = 'Limit książek';
 
-  panelOpenState = false;
-
   displayedColumns: string[] = [this.login, this.name, this.lastName, this.email, this.bookLimit];
-
-  constructor(private dataService: DataService,
-              private router: Router,
-              private route: ActivatedRoute) {
-    this.dataSource.data = this.OPTION_PANEL;
-  }
 
   ngOnInit() {
     this.getUsers();
   }
 
-  showSection(nodeValue: string) {
-    this.nodeValue = nodeValue;
+  navigateSection(nodeValue: string) {
+    if (nodeValue === this.ADD_USER) {
+      this.router.navigate(['addUser']);
+    } else {
+      this.nodeValue = nodeValue;
+    }
   }
 
   hasChild = (_: number, node: ExampleFlatNode) => node.expandable;
@@ -106,32 +110,12 @@ export class AdminPanelComponent implements OnInit {
     userBookLimit: new FormControl('')
   });
 
-  public newUserForm: FormGroup = new FormGroup({
-    newUserLogin: new FormControl(''),
-    newUserName: new FormControl(''),
-    newUserLastName: new FormControl(''),
-    newUserEmail: new FormControl(''),
-    newUserBookLimit: new FormControl(''),
-    newUserPassword: new FormControl('')
-  });
-
-  getUsersDetail(user: User) {
-    this.detailedUser = this.sortedUsers.find(usr => user.id === usr.id);
-    this.userForm.get('userLogin').setValue(this.detailedUser.login);
-    this.userForm.get('userName').setValue(this.detailedUser.name);
-    this.userForm.get('userLastName').setValue(this.detailedUser.lastName);
-    this.userForm.get('userEmail').setValue(this.detailedUser.email);
-    this.userForm.get('userLimit').setValue(this.detailedUser.bookLimit);
-    this.showUserDetails = true;
-    this.getUserBooks(user);
-  }
-
   updateUser() {
     let user = new User();
     user.id = this.detailedUser.id;
     user.login = this.detailedUser.login;
-    user.name = this.userForm.get('userName').value;
-    user.lastName = this.userForm.get('userLastName').value;
+    user.name = this.detailedUser.name;
+    user.lastName = this.detailedUser.lastName;
     user.email = this.userForm.get('userEmail').value;
     user.bookLimit = this.userForm.get('userLimit').value;
     this.dataService.updateUser(user).subscribe(
@@ -153,9 +137,23 @@ export class AdminPanelComponent implements OnInit {
     this.dataService.getUserBooks(user).subscribe(
       userBooks => {
         this.userBooks = userBooks;
+        this.router.navigate(['adminPanel']);
+        this.showUserDetails = false;
+        this.showBookDetails = true;
+        this.currentUserSelectedId = user.id;
       }
     );
-    this.router.navigate(['adminPanel'], {queryParams: {userId: user.id}});
+  }
+
+  getUsersDetail(user: User) {
+    this.detailedUser = this.sortedUsers.find(usr => user.id === usr.id);
+    this.userForm.get('userLogin').setValue(user.login);
+    this.userForm.get('userName').setValue(user.name);
+    this.userForm.get('userLastName').setValue(user.lastName);
+    this.userForm.get('userEmail').setValue(user.email);
+    this.userForm.get('userBookLimit').setValue(user.bookLimit);
+    this.showUserDetails = true;
+    this.showBookDetails = false;
     this.currentUserSelectedId = user.id;
   }
 
@@ -182,22 +180,6 @@ export class AdminPanelComponent implements OnInit {
     this.userForm.get('userLimit').setValue('');
   }
 
-  createUser() {
-    let newUser = new User();
-    newUser.login = this.newUserForm.get('newUserLogin').value;
-    newUser.name = this.newUserForm.get('newUserName').value;
-    newUser.lastName = this.newUserForm.get('newUserLastName').value;
-    newUser.email = this.newUserForm.get('newUserEmail').value;
-    newUser.bookLimit = this.newUserForm.get('newUserLimit').value;
-    this.dataService.createUser(newUser).subscribe(
-      user => {
-        this.getUsers();
-        console.log(user);
-        console.log(this.sortedUsers);
-      }
-    );
-  }
-
   sortData(sort: Sort) {
     const data = this.sortedUsers.slice();
     if (!sort.active || sort.direction === '') {
@@ -209,22 +191,21 @@ export class AdminPanelComponent implements OnInit {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
         case this.login:
-          return compare(a.id, b.id, isAsc);
+          return compare(a.login, b.login, isAsc);
         case this.name:
-          return compare(a.id, b.id, isAsc);
+          return compare(a.name, b.name, isAsc);
         case this.lastName:
-          return compare(a.id, b.id, isAsc);
+          return compare(a.lastName, b.lastName, isAsc);
         case this.email:
-          return compare(a.id, b.id, isAsc);
+          return compare(a.email, b.email, isAsc);
         case this.bookLimit:
-          return compare(a.id, b.id, isAsc);
+          return compare(a.bookLimit, b.bookLimit, isAsc);
         default:
           return 0;
       }
     });
   }
 }
-
 
 function compare(a: number | string, b: number | string, isAsc: boolean) {
   return (a < b ? -1 : 1) * (isAsc ? 1 : -1);

@@ -1,0 +1,20 @@
+<mat-card class="mb-5 shadow-none" *ngIf="loggedUser">
+  <div class="row">
+    <div class="col-6">
+      <div class="row">
+        <mat-card-header style="opacity: 50%">
+          <div mat-card-avatar class="example-header-image"></div>
+          <mat-card-title>{{loggedUser.login}}</mat-card-title>
+          <mat-card-subtitle *ngIf="loggedUser.admin === false">{{loggedUser.name}} {{loggedUser.lastName}}</mat-card-subtitle>
+        </mat-card-header>
+      </div>
+      <div class="row" *ngIf="loggedUser.admin === false">
+        <mat-card-content>
+          <p><b>Email: </b> {{loggedUser.email}}</p>
+          <p><b>Limit Książek:</b> {{loggedUser.bookLimit}}</p>
+        </mat-card-content>
+      </div>
+    </div>
+  </div>
+</mat-card>
+

@@ -46,8 +46,9 @@ export class DataService {
     return this.http.get<User[]>(environment.restUrl + 'users', {withCredentials: true});
   }
 
-  createUser(user: User): Observable<User> {
-    return this.http.post<User>(environment.restUrl + 'users', user, {withCredentials: true});
+  createUser(user: User, password: string): Observable<User> {
+    const headers = new HttpHeaders().append('Password', password);
+    return this.http.post<User>(environment.restUrl + 'users', user, {headers, withCredentials: true});
   }
 
   updateUser(user: User): Observable<User> {
@@ -68,7 +69,7 @@ export class DataService {
 
   validateUser(name: string, password: string): Observable<{ result: string }> {
     const authData = btoa(`${name}:${password}`);
-    const headers = new HttpHeaders().append('Authorization', 'Basic ' + authData)   .append("X-Requested-With", "XMLHttpRequest");
+    const headers = new HttpHeaders().append('Authorization', 'Basic ' + authData).append("X-Requested-With", "XMLHttpRequest");
     return this.http.get<{ result: string }>(environment.restUrl + 'basicAuth/validate', {headers: headers, withCredentials: true});
   }
 
