@@ -34,6 +34,10 @@ export class DataService {
     return this.http.put<Book>(environment.restUrl + 'books', book, {withCredentials: true});
   }
 
+  createBook(book: Book): Observable<Book> {
+    return this.http.post<Book>(environment.restUrl + 'books', book, {withCredentials: true});
+  }
+
   returnBook(user: User, book: Book): Observable<void> {
     return this.http.delete<void>(environment.restUrl + 'users/' + user.login + '/book/' + book.id, {withCredentials: true});
   }
@@ -65,6 +69,14 @@ export class DataService {
 
   deleteUser(login: string): Observable<User> {
     return this.http.delete<User>(environment.restUrl + 'users/delete/' + login, {withCredentials: true});
+  }
+
+  blockUser(login: string): Observable<User> {
+    return this.http.put<User>(environment.restUrl + 'users/disable/' + login, null, {withCredentials: true});
+  }
+
+  unBlockUser(login: string): Observable<User> {
+    return this.http.put<User>(environment.restUrl + 'users/enable/' + login, null, {withCredentials: true});
   }
 
   validateUser(name: string, password: string): Observable<{ result: string }> {

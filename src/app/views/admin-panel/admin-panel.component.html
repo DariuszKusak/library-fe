@@ -1,10 +1,16 @@
 <div class="container">
-
+  <div class="row">
+    <div class="alert alert-primary" role="alert" *ngIf="infoMessage">{{infoMessage}}</div>
+  </div>
+  <div class="row">
+    <div class="alert alert-success" role="alert" *ngIf="successMessage">{{successMessage}}</div>
+  </div>
   <div class="row">
     <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
       <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
         <button mat-icon-button disabled></button>
-        <div (click)="navigateSection(node.name)" style="cursor: pointer">
+        <div (click)="navigateSection(node)" style="cursor: pointer"
+             [ngClass]="{ 'node-activated': activeNode === node }">
           {{node.name}}
         </div>
       </mat-tree-node>
@@ -19,23 +25,141 @@
     </mat-tree>
   </div>
 
+  <div class="row mt-5" *ngIf=" activeNode && activeNode.name === ADD_USER">
+    <form [formGroup]="newUserForm">
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Login</mat-label>
+          <input matInput class="search-field" formControlName="newUserLogin"/>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Hasło</mat-label>
+          <input matInput class="search-field" formControlName="newUserPassword"
+                 [type]="hidePassword ? 'password' : 'text'"/>
+          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
+                  [attr.aria-pressed]="hidePassword">
+            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+          </button>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Imię</mat-label>
+          <input matInput class="search-field" formControlName="newUserName"/>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Nazwisko</mat-label>
+          <input matInput class="search-field" formControlName="newUserLastName"/>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Email</mat-label>
+          <input matInput class="search-field" formControlName="newUserEmail"/>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Limit książęk</mat-label>
+          <input matInput class="search-field" formControlName="newUserBookLimit"/>
+        </mat-form-field>
+      </div>
+      <div class="row mt-3">
+        <div>
+          <button mat-stroked-button color="primary" (click)="createUser()">Utwórz</button>
+        </div>
+      </div>
+    </form>
+  </div>
 
-  <div class="row mt-5">
-    <div *ngIf="nodeValue===SHOW_USERS">
-      <table mat-table [dataSource]="sortedUsers" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)">
-        <ng-container matColumnDef={{login}}>
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{login}} </th>
-            <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu">
-              <mat-menu #menu="matMenu">
-                <button mat-menu-item (click)="getUserBooks(user)">Wyświetl książki użytkownika</button>
-                <button mat-menu-item (click)="getUsersDetail(user)">Wyświetl dane użytkownika</button>
-              </mat-menu>
-              {{user.login}}</td>
+  <div class="row mt-5" *ngIf=" activeNode && activeNode.name === ADD_BOOK">
+    <form [formGroup]="newBookForm">
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Tytuł</mat-label>
+          <input matInput class="search-field" formControlName="newBookTitle"/>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Autor</mat-label>
+          <input matInput class="search-field" formControlName="newBookAuthor"/>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Opis</mat-label>
+          <textarea
+            matInput
+            cdkTextareaAutosize
+            #autosize="cdkTextareaAutosize"
+            cdkAutosizeMinRows="1"
+            cdkAutosizeMaxRows="5"
+            class="search-field" formControlName="newBookDescription"></textarea>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Odnośnik do miniatury</mat-label>
+          <input matInput class="search-field" formControlName="newBookImageUrl"/>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Gatunek</mat-label>
+          <input matInput class="search-field" formControlName="newBookGenre"/>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Rok wydania</mat-label>
+          <input matInput class="search-field" formControlName="newBookYear"/>
+        </mat-form-field>
+      </div>
+      <div class="row">
+        <mat-form-field class="example-full-width">
+          <mat-label>Ilość</mat-label>
+          <input matInput class="search-field" formControlName="newBookAmount"/>
+        </mat-form-field>
+      </div>
+        <div class="row mt-3">
+          <div>
+            <button mat-stroked-button color="primary" (click)="createBook()">Utwórz</button>
+          </div>
+        </div>
+      </form>
+    </div>
+
+  <div class="row mt-5" *ngIf="activeNode && activeNode.name === SHOW_BOOKS">
+    <div class="col-xs-12">
+      <app-catalog></app-catalog>
+    </div>
+  </div>
+
+
+    <div class="row mt-5">
+      <div *ngIf="activeNode && activeNode.name === SHOW_USERS">
+        <table mat-table [dataSource]="sortedUsers" matSort class="mat-elevation-z8" (matSortChange)="sortData($event)">
+          <ng-container matColumnDef={{login}}>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Login </th>
+          <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu"
+              [ngClass]="{ 'row-activated': this.currentUserSelectedId === user.id }"
+              [class.text-danger]="!user.enabled">
+            <mat-menu #menu="matMenu">
+              <button mat-menu-item (click)="getUserBooks(user)">Wyświetl książki użytkownika</button>
+              <button mat-menu-item (click)="getUsersDetail(user)">Wyświetl dane użytkownika</button>
+            </mat-menu>
+            {{user.login}}</td>
         </ng-container>
         <ng-container matColumnDef={{name}}>
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{name}} </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Imię </th>
           <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu"
-              (click)="getUsersDetail(user)">
+              [ngClass]="{ 'row-activated': this.currentUserSelectedId === user.id }"
+              [class.text-danger]="!user.enabled">
             <mat-menu #menu="matMenu">
               <button mat-menu-item (click)="getUserBooks(user)">Wyświetl książki użytkownika</button>
               <button mat-menu-item (click)="getUsersDetail(user)">Wyświetl dane użytkownika</button>
@@ -43,9 +167,10 @@
             {{user.name}}</td>
         </ng-container>
         <ng-container matColumnDef={{lastName}}>
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{lastName}} </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Nazwisko </th>
           <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu"
-              (click)="getUsersDetail(user)">
+              [ngClass]="{ 'row-activated': this.currentUserSelectedId === user.id }"
+              [class.text-danger]="!user.enabled">
             <mat-menu #menu="matMenu">
               <button mat-menu-item (click)="getUserBooks(user)">Wyświetl książki użytkownika</button>
               <button mat-menu-item (click)="getUsersDetail(user)">Wyświetl dane użytkownika</button>
@@ -53,9 +178,10 @@
             {{user.lastName}}</td>
         </ng-container>
         <ng-container matColumnDef={{email}}>
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{email}} </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Email </th>
           <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu"
-              (click)="getUsersDetail(user)">
+              [ngClass]="{ 'row-activated': this.currentUserSelectedId === user.id }"
+              [class.text-danger]="!user.enabled">
             <mat-menu #menu="matMenu">
               <button mat-menu-item (click)="getUserBooks(user)">Wyświetl książki użytkownika</button>
               <button mat-menu-item (click)="getUsersDetail(user)">Wyświetl dane użytkownika</button>
@@ -63,9 +189,10 @@
             {{user.email}}</td>
         </ng-container>
         <ng-container matColumnDef={{bookLimit}}>
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{bookLimit}} </th>
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Limit Książek </th>
           <td mat-cell *matCellDef="let user" style="cursor: pointer" [matMenuTriggerFor]="menu"
-              (click)="getUsersDetail(user)">
+              [ngClass]="{ 'row-activated': this.currentUserSelectedId === user.id }"
+              [class.text-danger]="!user.enabled">
             <mat-menu #menu="matMenu">
               <button mat-menu-item (click)="getUserBooks(user)">Wyświetl książki użytkownika</button>
               <button mat-menu-item (click)="getUsersDetail(user)">Wyświetl dane użytkownika</button>
@@ -79,7 +206,7 @@
   </div>
 
   <div class="row mt-5">
-    <mat-accordion *ngIf="nodeValue==SHOW_USERS && showBookDetails">
+    <mat-accordion *ngIf="activeNode && activeNode.name === SHOW_USERS && showBookDetails">
       <mat-expansion-panel *ngFor="let userBook of userBooks">
         <mat-expansion-panel-header>
           <mat-panel-title>{{userBook.author}}</mat-panel-title>
@@ -89,6 +216,7 @@
         <p><b>Rok wydania: </b>{{userBook.year}}</p>
         <p><b>Gatunek: </b>{{userBook.genre}}</p>
         <p><b>Ilość: </b>{{userBook.amount}}</p>
+        <hr/>
         <button mat-stroked-button color="primary" (click)="returnBook(userBook)">Zwróć książkę</button>
       </mat-expansion-panel>
     </mat-accordion>
@@ -96,13 +224,7 @@
 
   <div class="row mb-5">
     <div class="col">
-      <form [formGroup]="userForm" *ngIf="nodeValue===SHOW_USERS && showUserDetails">
-        <div class="row">
-          <mat-form-field class="example-full-width">
-            <mat-label>Login</mat-label>
-            <input matInput class="search-field" formControlName="userLogin" readonly/>
-          </mat-form-field>
-        </div>
+      <form [formGroup]="userForm" *ngIf="activeNode && activeNode.name === SHOW_USERS && showUserDetails">
         <div class="row">
           <mat-form-field class="example-full-width">
             <mat-label>Imię</mat-label>
@@ -118,7 +240,7 @@
         <div class="row">
           <mat-form-field class="example-full-width">
             <mat-label>Email</mat-label>
-            <input matInput class="search-field" formControlName="userEmail" readonly/>
+            <input matInput class="search-field" formControlName="userEmail"/>
           </mat-form-field>
         </div>
         <div class="row">
@@ -129,10 +251,13 @@
         </div>
         <div class="row mt-3">
           <button mat-stroked-button color="primary" (click)="updateUser()">Aktualizuj</button>
-          <button class="ml-3" mat-stroked-button color="primary" (click)="deleteUser()">Usuń</button>
+          <button class="ml-2"mat-stroked-button color="primary" (click)="deleteUser()">Usuń</button>
+          <button class="ml-2" mat-stroked-button color="primary" (click)="blockUser()" *ngIf="this.getCurrentUser().enabled">Zablokuj</button>
+          <button class="ml-2" mat-stroked-button color="primary" (click)="unBlockUser()" *ngIf="!this.getCurrentUser().enabled">Odblokuj</button>
         </div>
       </form>
     </div>
   </div>
 
 </div>
+

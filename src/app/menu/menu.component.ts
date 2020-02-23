@@ -11,12 +11,12 @@ import {DataService} from '../services/data.service';
 })
 export class MenuComponent implements OnInit {
 
-  navLink1 = {label: 'O nas', path: ''};
-  navLink2 = {label: 'Katalog', path: 'catalog'};
-  navLink3 = {label: 'Twoje Książki', path: 'usersBooks'};
-  navLink4 = {label: 'Panel Administratora', path: 'adminPanel'};
+  nLinkHome = {label: 'O nas', path: ''};
+  nLinkCatalog = {label: 'Katalog', path: 'catalog'};
+  nLinkUserBooks = {label: 'Twoje Książki', path: 'usersBooks'};
+  nLinkAdminPanel = {label: 'Panel Administratora', path: 'adminPanel'};
 
-  navLinks: Navlink[] = [this.navLink1, this.navLink2];
+  navLinks: Navlink[] = [this.nLinkHome, this.nLinkCatalog];
 
   message = '';
   loginValue = 'Zaloguj';
@@ -40,16 +40,18 @@ export class MenuComponent implements OnInit {
         if (result) {
           const role = this.authService.getRole();
           if (role === 'USER') {
-            this.navLinks = [this.navLink1, this.navLink2, this.navLink3];
+            this.navLinks = [this.nLinkHome, this.nLinkCatalog, this.nLinkUserBooks];
+            this.infoLogin = "Informacje o użytkowniku";
             this.router.navigate(['usersBooks']);
           }
           if (role === 'ADMIN') {
-            this.navLinks = [this.navLink1, this.navLink2, this.navLink4];
+            this.navLinks = [this.nLinkHome, this.nLinkAdminPanel];
             this.router.navigate(['adminPanel']);
+            this.infoLogin = "Informacje o administratorze";
           }
         } else {
           this.message = 'Your username or login was not recognized. Try Again.';
-          this.navLinks = [this.navLink1, this.navLink2];
+          this.navLinks = [this.nLinkHome, this.nLinkCatalog];
         }
       }
     );
@@ -60,11 +62,6 @@ export class MenuComponent implements OnInit {
       user => {
         this.loggedUser = user;
         this.loginValue = user.login;
-        if (user.admin) {
-          this.infoLogin = "Informacje o administratorze";
-        } else {
-          this.infoLogin = "Informacje o użytkowniku";
-        }
       }
     );
   }
@@ -77,7 +74,7 @@ export class MenuComponent implements OnInit {
       this.authService.logout();
       this.loggedUser = null;
       this.loginValue = 'Zaloguj';
-      this.navLinks = [this.navLink1, this.navLink2];
+      this.navLinks = [this.nLinkHome, this.nLinkCatalog];
       this.router.navigate(['login']);
   }
 

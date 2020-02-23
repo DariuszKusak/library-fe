@@ -1,9 +1,26 @@
 table {
   width: 100%;
+  table-layout: fixed;
 }
 
-th.mat-sort-header-sorted {
-  color: black;
+th, td {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mat-row:nth-child(odd) {
+  background-color: #F8F8F8;
+}
+
+.mat-column-author {
+  width: 20% !important;
+}
+.mat-column-title {
+  width: 70% !important;
+}
+.mat-column-amount {
+  width: 10% !important;
 }
 
 

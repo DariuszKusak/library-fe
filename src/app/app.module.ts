@@ -32,7 +32,6 @@ import {FormsModule, ReactiveFormsModule} from '@angular/forms';
 import {LoginComponent} from './views/login/login.component';
 import {UserInformationComponent} from './views/user-information/user-information.component';
 import {BookDetailsComponent} from './views/book-details/book-details.component';
-import {AddUserComponent} from './views/add-user/add-user.component';
 import {AdminGuardService} from './guards/admin-guard.service';
 import {AdminUserGuardService} from './guards/admin-user-guard.service';
 import {UserGuardService} from './guards/user-guard.service';
@@ -45,7 +44,6 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'userInformation', component: UserInformationComponent, canActivate: [AdminUserGuardService]},
   {path: 'bookDetails', component: BookDetailsComponent, canActivate: [UserGuardService]},
-  {path: 'addUser', component: AddUserComponent}
 ];
 
 @NgModule({
@@ -58,8 +56,7 @@ const routes: Routes = [
     AdminPanelComponent,
     LoginComponent,
     UserInformationComponent,
-    BookDetailsComponent,
-    AddUserComponent
+    BookDetailsComponent
   ],
   imports: [
     BrowserModule,

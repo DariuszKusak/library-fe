@@ -1,9 +1,6 @@
 <div class="container">
-  <div class="row">
     <div class="alert alert-primary" role="alert" *ngIf="message">{{message}}</div>
-  </div>
-  <div class="row">
-    <mat-card class="mb-5 shadow-none" *ngIf="detailedBook">
+    <mat-card class="shadow-none" *ngIf="detailedBook">
       <div class="row">
         <div class="col-sm-9">
           <div class="row">
@@ -26,15 +23,14 @@
           <img mat-card-image src="{{detailedBook.imageUrl}}" class="w-75 mt-2 mr-2 float-right">
         </div>
       </div>
-      <mat-card-actions>
-        <div class="mr-3" *ngIf="detailedBook.available">
-          <button mat-stroked-button color="primary" (click)="borrowBook(detailedBook)">Wypożycz</button>
-        </div>
-        <div>
-          <button mat-stroked-button color="primary" (click)="returnToCatalog()">Wróć</button>
-        </div>
-      </mat-card-actions>
     </mat-card>
+
+    <div>
+      <button mat-stroked-button color="primary" class="mr-2" (click)="borrowBook(detailedBook)" *ngIf="detailedBook && detailedBook.available">Wypożycz</button>
+      <button mat-stroked-button color="primary" (click)="returnToCatalog()">Powrót</button>
+    </div>
+
   </div>
-</div>
+
+
 

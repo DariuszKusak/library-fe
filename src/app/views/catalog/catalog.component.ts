@@ -12,7 +12,6 @@ import {MatSort} from '@angular/material/sort';
 })
 export class CatalogComponent implements OnInit {
 
-  public readonly id = 'Id';
   public readonly author = 'author';
   public readonly title = 'title';
   public readonly amount = 'amount';

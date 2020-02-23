@@ -1,11 +1,45 @@
+.mat-row:nth-child(odd){
+  background-color:#F8F8F8;
+}
+
+.node-activated{
+  color:#4B0082;
+  font-weight: bold;
+}
+
+.row-activated{
+  font-weight: bold;
+}
+
 table {
+  width: 100%;
+  table-layout: fixed;
+}
+
+th, td {
+  overflow: hidden;
+  width: 200px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mat-column-login {
+  width: 20% !important;
+}
+.mat-column-name {
+  width: 15% !important;
+}
+.mat-column-lastName {
+  width: 15% !important;
+}
+.mat-column-bookLimit {
+  width: 40% !important;
+}
+.mat-column-bookLimit {
+  width: 10% !important;
+}
+
+mat-accordion {
   width: 100%;
 }
 
-.mat-cell {
-  padding: 20px 20px 20px 0;
-}
-
-.mat-row:nth-child(even){
-  background-color:#F8F8F8;
-}

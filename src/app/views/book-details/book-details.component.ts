@@ -11,7 +11,7 @@ import {DataService} from '../../services/data.service';
 export class BookDetailsComponent implements OnInit {
 
   message = '';
-  detailedBook: Book;
+  detailedBook;
 
   constructor(private dataService: DataService,
               private router: Router,
