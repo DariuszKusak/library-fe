@@ -23,5 +23,7 @@ th, td {
   width: 10% !important;
 }
 
-
+.row-activated{
+  font-weight: bold;
+}
 

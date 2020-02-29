@@ -72,6 +72,7 @@ export class AdminPanelComponent implements OnInit {
   currentUserSelectedId;
   infoMessage = '';
   successMessage = '';
+  errorMessage = '';
   panelOpenState = false;
 
   constructor(private dataService: DataService,
@@ -86,11 +87,19 @@ export class AdminPanelComponent implements OnInit {
   public readonly bookLimit = 'bookLimit';
   activeNode: any;
   hidePassword = true;
+  chosenBook: Book;
+  editBook = false;
 
   displayedColumns: string[] = [this.login, this.name, this.lastName, this.email, this.bookLimit];
 
   ngOnInit() {
     this.getUsers();
+    this.dataService.chosenBookEventEmitter.subscribe(
+      bookId => {
+        this.getBook(bookId);
+        this.editBook = true;
+      }
+    );
   }
 
   navigateSection(node: Node) {
@@ -124,6 +133,31 @@ export class AdminPanelComponent implements OnInit {
     newBookYear: new FormControl(''),
     newBookAmount: new FormControl('')
   });
+
+  public bookForm: FormGroup = new FormGroup({
+    bookTitle: new FormControl(''),
+    bookAuthor: new FormControl(''),
+    bookDescription: new FormControl(''),
+    bookImageUrl: new FormControl(''),
+    bookGenre: new FormControl(''),
+    bookYear: new FormControl(''),
+    bookAmount: new FormControl('')
+  });
+
+  getBook(bookId: number) {
+    this.dataService.getBookById(bookId).subscribe(
+      book => {
+        this.chosenBook = book;
+        this.bookForm.get('bookTitle').setValue(this.chosenBook.title);
+        this.bookForm.get('bookAuthor').setValue(this.chosenBook.author);
+        this.bookForm.get('bookDescription').setValue(this.chosenBook.description);
+        this.bookForm.get('bookImageUrl').setValue(this.chosenBook.imageUrl);
+        this.bookForm.get('bookGenre').setValue(this.chosenBook.genre);
+        this.bookForm.get('bookYear').setValue(this.chosenBook.year);
+        this.bookForm.get('bookAmount').setValue(this.chosenBook.amount);
+      }
+    );
+  }
 
   updateUser() {
     this.clearMessages();
@@ -262,6 +296,37 @@ export class AdminPanelComponent implements OnInit {
         if (error.error.status === 4445) {
           this.infoMessage = error.error.error;
         }
+      }
+    );
+  }
+
+  updateBook() {
+    let updatedBook = new Book();
+    updatedBook.id = this.chosenBook.id;
+    updatedBook.title =  this.bookForm.get('bookTitle').value;
+    updatedBook.author = this.bookForm.get('bookAuthor').value;
+    updatedBook.description = this.bookForm.get('bookDescription').value;
+    updatedBook.imageUrl =  this.bookForm.get('bookImageUrl').value;
+    updatedBook.genre = this.bookForm.get('bookGenre').value;
+    updatedBook.year = this.bookForm.get('bookYear').value;
+    updatedBook.amount = this.bookForm.get('bookAmount').value;
+    this.dataService.updateBook(updatedBook).subscribe(
+      book => {
+        this.dataService.refreshBooks.emit();
+        this.successMessage = `Pomyślnie usunięto książkę ${book.title}`;
+        this.editBook = false;
+      }
+    );
+  }
+
+  deleteBook() {
+    this.dataService.deleteBook(this.chosenBook.id).subscribe(
+      book => {
+        this.dataService.refreshBooks.emit();
+        this.successMessage = `Pomyślnie usunięto książkę ${book.title}`;
+        this.editBook = false;
+      }, error => {
+        this.errorMessage = `Błąd usuwania książki`;
       }
     );
   }

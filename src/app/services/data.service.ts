@@ -1,4 +1,4 @@
-import {Injectable} from '@angular/core';
+import {EventEmitter, Injectable} from '@angular/core';
 import {HttpClient, HttpHeaders} from '@angular/common/http';
 import {Book} from '../model/Book';
 import {environment} from '../../environments/environment';
@@ -11,6 +11,9 @@ import {Mail} from "../model/Mail";
   providedIn: 'root'
 })
 export class DataService {
+
+  chosenBookEventEmitter = new EventEmitter<number>();
+  refreshBooks = new EventEmitter();
 
   constructor(private http: HttpClient) {
   }
@@ -41,6 +44,14 @@ export class DataService {
 
   returnBook(user: User, book: Book): Observable<void> {
     return this.http.delete<void>(environment.restUrl + 'users/' + user.login + '/book/' + book.id, {withCredentials: true});
+  }
+
+  updateBook(book: Book): Observable<Book> {
+    return this.http.put<Book>(environment.restUrl + 'books/update', book, {withCredentials: true});
+  }
+
+  deleteBook(id: number): Observable<Book> {
+    return this.http.delete<Book>(environment.restUrl + 'books/' + id, {withCredentials: true});
   }
 
   getUserByLogin(login: string) {

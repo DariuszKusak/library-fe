@@ -4,6 +4,7 @@ import {DataService} from '../../services/data.service';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
 import {Router} from '@angular/router';
 import {MatSort} from '@angular/material/sort';
+import {AuthService} from "../../services/auth.service";
 
 @Component({
   selector: 'app-catalog',
@@ -18,15 +19,26 @@ export class CatalogComponent implements OnInit {
 
   bookDataSource = new MatTableDataSource<Book>();
   displayedColumns: string[] = [this.author, this.title, this.amount];
+  currentBookSelectedId;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
 
   constructor(private dataService: DataService,
-              private router: Router) {
+              private router: Router,
+              private authService: AuthService) {
   }
 
   ngOnInit(): void {
+    this.getBooks();
+    this.dataService.refreshBooks.subscribe(
+      result => {
+        this.getBooks();
+      }
+    );
+  }
+
+  getBooks() {
     this.dataService.getBooks().subscribe(
       data => {
         this.bookDataSource = new MatTableDataSource<Book>(data);
@@ -42,7 +54,15 @@ export class CatalogComponent implements OnInit {
   }
 
   private bookDetails(id: number) {
-    this.router.navigate(['bookDetails'], {queryParams: {'bookId': id}});
+    this.currentBookSelectedId = id;
+    if (this.authService.getRole() === 'USER') {
+      this.router.navigate(['bookDetails'], {queryParams: {'bookId': id}});
+    } else if (this.authService.getRole() === 'ADMIN') {
+      this.dataService.chosenBookEventEmitter.emit(id);
+    } else {
+      this.router.navigate(['login']);
+    }
   }
+
 
 }

@@ -45,7 +45,7 @@ const routes: Routes = [
   {path: 'adminPanel', component: AdminPanelComponent, canActivate: [AdminGuardService]},
   {path: 'login', component: LoginComponent},
   {path: 'userInformation', component: UserInformationComponent, canActivate: [AdminUserGuardService]},
-  {path: 'bookDetails', component: BookDetailsComponent, canActivate: [UserGuardService]},
+  {path: 'bookDetails', component: BookDetailsComponent, canActivate: [AdminUserGuardService]},
   {path: 'mail', component: MailComponent}
 ];
 
