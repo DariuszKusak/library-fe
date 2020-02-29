@@ -1,7 +1,6 @@
 import {Component, OnDestroy, OnInit} from '@angular/core';
 import {DataService} from '../../services/data.service';
 import {Book} from '../../model/Book';
-import {ActivatedRoute, Router} from '@angular/router';
 import {Subscription} from 'rxjs';
 
 @Component({
@@ -30,5 +29,6 @@ export class BookListComponent implements OnInit, OnDestroy {
   ngOnDestroy(): void {
     this.booksSubscription.unsubscribe();
   }
+
 
 }

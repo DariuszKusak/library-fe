@@ -109,4 +109,5 @@ export class DataService {
     return this.http.get<string>(environment.restUrl + 'users/logout', {withCredentials: true});
   }
 
+
 }

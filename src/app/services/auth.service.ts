@@ -1,12 +1,15 @@
-import {EventEmitter, Injectable} from '@angular/core';
+import {EventEmitter, Injectable, OnDestroy} from '@angular/core';
 import {DataService} from './data.service';
 import {User} from '../model/User';
+import {Subscription} from "rxjs";
 
 @Injectable({
   providedIn: 'root'
 })
-export class AuthService {
+export class AuthService implements OnDestroy{
 
+  loginSubscription: Subscription;
+  validateSubscription: Subscription;
   isAuthenticated = false;
   authenticationResultEvent = new EventEmitter<boolean>();
   authenticationResultUserEvent = new EventEmitter<string>();
@@ -17,7 +20,7 @@ export class AuthService {
   }
 
   authenticate(login: string, password: string) {
-    this.dataService.validateUser(login, password).subscribe(
+    this.validateSubscription = this.dataService.validateUser(login, password).subscribe(
       next => {
         this.jwtToken = next.result;
         this.isAuthenticated = true;
@@ -45,7 +48,7 @@ export class AuthService {
     }
     const encodedPayload = this.jwtToken.split('.')[1];
     const payload = atob(encodedPayload);
-    this.dataService.getUserByLogin(JSON.parse(payload).user).subscribe(
+    this.loginSubscription = this.dataService.getUserByLogin(JSON.parse(payload).user).subscribe(
       usr => {
         this.user = usr;
       }
@@ -65,5 +68,10 @@ export class AuthService {
     this.dataService.logout().subscribe();
     this.isAuthenticated = false;
   }
+
+  ngOnDestroy(): void {
+    this.validateSubscription.unsubscribe();
+  }
+
 
 }

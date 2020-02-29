@@ -13,10 +13,11 @@ export class UserGuardService implements CanActivate {
 
   canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot): boolean {
     const role = this.authService.getRole();
-
     if (role !== 'USER') {
       this.router.navigate(['login']);
     }
     return this.authService.isAuthenticated;
   }
+
+
 }

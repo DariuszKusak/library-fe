@@ -1,15 +1,16 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {AuthService} from '../../services/auth.service';
 import {FormControl, FormGroup} from "@angular/forms";
 import {User} from "../../model/User";
 import {DataService} from "../../services/data.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
   styleUrls: ['./login.component.css']
 })
-export class LoginComponent implements OnInit {
+export class LoginComponent implements OnInit, OnDestroy {
 
   errorMessage = 'Tylko zagolowani użytkownicy uprawnieni są do wypożyczania książęk.';
   successMessage = '';
@@ -17,10 +18,11 @@ export class LoginComponent implements OnInit {
   hidePassword;
   userLogged;
   isSending = false;
+  authenticationSubscription: Subscription;
 
   constructor(private authService: AuthService,
               private dataService: DataService) {
-    this.authService.authenticationResultEvent.subscribe(
+    this.authenticationSubscription = this.authService.authenticationResultEvent.subscribe(
       result => {
         if (!result) {
           this.errorMessage = 'Podano błędny login, lub hasło. Spróbuj ponownie.'
@@ -77,6 +79,10 @@ export class LoginComponent implements OnInit {
   clearMessages() {
     this.successMessage = '';
     this.errorMessage = '';
+  }
+
+  ngOnDestroy(): void {
+    this.authenticationSubscription.unsubscribe();
   }
 
 

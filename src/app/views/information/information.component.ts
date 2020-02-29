@@ -14,4 +14,6 @@ export class InformationComponent {
   sendMail() {
     this.router.navigate(['mail']);
   }
+
+
 }

@@ -1,4 +1,4 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Book} from '../../model/Book';
 import {DataService} from '../../services/data.service';
 import {User} from '../../model/User';
@@ -6,6 +6,7 @@ import {MatTreeFlatDataSource, MatTreeFlattener, Sort} from '@angular/material';
 import {Router} from '@angular/router';
 import {FormControl, FormGroup} from '@angular/forms';
 import {FlatTreeControl} from '@angular/cdk/tree';
+import {Subscription} from "rxjs";
 
 interface FoodNode {
   name: string;
@@ -75,11 +76,6 @@ export class AdminPanelComponent implements OnInit {
   errorMessage = '';
   panelOpenState = false;
 
-  constructor(private dataService: DataService,
-              private router: Router) {
-    this.dataSource.data = this.OPTION_PANEL;
-  }
-
   public readonly login = 'login';
   public readonly name = 'name';
   public readonly lastName = 'lastName';
@@ -91,22 +87,6 @@ export class AdminPanelComponent implements OnInit {
   editBook = false;
 
   displayedColumns: string[] = [this.login, this.name, this.lastName, this.email, this.bookLimit];
-
-  ngOnInit() {
-    this.getUsers();
-    this.dataService.chosenBookEventEmitter.subscribe(
-      bookId => {
-        this.getBook(bookId);
-        this.editBook = true;
-      }
-    );
-  }
-
-  navigateSection(node: Node) {
-    this.activeNode = node;
-  }
-
-  hasChild = (_: number, node: ExampleFlatNode) => node.expandable;
 
   public userForm: FormGroup = new FormGroup({
     userName: new FormControl(''),
@@ -144,6 +124,27 @@ export class AdminPanelComponent implements OnInit {
     bookAmount: new FormControl('')
   });
 
+  constructor(private dataService: DataService,
+              private router: Router) {
+    this.dataSource.data = this.OPTION_PANEL;
+  }
+
+  ngOnInit() {
+    this.getUsers();
+    this.dataService.chosenBookEventEmitter.subscribe(
+      bookId => {
+        this.getBook(bookId);
+        this.editBook = true;
+      }
+    );
+  }
+
+  navigateSection(node: Node) {
+    this.activeNode = node;
+  }
+
+  hasChild = (_: number, node: ExampleFlatNode) => node.expandable;
+
   getBook(bookId: number) {
     this.dataService.getBookById(bookId).subscribe(
       book => {
@@ -159,123 +160,12 @@ export class AdminPanelComponent implements OnInit {
     );
   }
 
-  updateUser() {
-    this.clearMessages();
-    let user = this.getCurrentUser();
-    console.log(user);
-    user.name = this.userForm.get('userName').value;
-    user.lastName = this.userForm.get('userLastName').value;
-    user.email = this.userForm.get('userEmail').value;
-    user.bookLimit = this.userForm.get('userBookLimit').value;
-    this.dataService.updateUser(user).subscribe(
-      user => {
-        this.getUsers();
-      }
-    );
-  }
-
-  getUsers() {
-    this.clearMessages();
-    this.dataService.getUsers().subscribe(
-      users => {
-        this.sortedUsers = users;
-      }
-    );
-  }
-
-  getUserBooks(user: User) {
-    this.clearMessages();
-    this.dataService.getUserBooks(user).subscribe(
-      userBooks => {
-        this.userBooks = userBooks;
-        this.router.navigate(['adminPanel']);
-        this.showUserDetails = false;
-        this.showBookDetails = true;
-        this.currentUserSelectedId = user.id;
-        if (this.userBooks.length === 0) {
-          this.infoMessage = `Użytkownik ${user.login} nie wypożyczył żadnych książek`;
-        }
-      }
-    );
-  }
-
-  getUsersDetail(user: User) {
-    this.clearMessages();
-    this.userForm.get('userName').setValue(user.name);
-    this.userForm.get('userLastName').setValue(user.lastName);
-    this.userForm.get('userEmail').setValue(user.email);
-    this.userForm.get('userBookLimit').setValue(user.bookLimit);
-    this.showUserDetails = true;
-    this.showBookDetails = false;
-    this.currentUserSelectedId = user.id;
-  }
-
   returnBook(book: Book) {
     this.clearMessages();
     const user = this.sortedUsers.find(user => user.id === this.currentUserSelectedId);
     this.dataService.returnBook(user, book).subscribe(
       data => {
         this.getUserBooks(user);
-      }
-    );
-  }
-
-  clearMessages() {
-    this.infoMessage = '';
-    this.successMessage = '';
-  }
-
-  getCurrentUser() {
-    return this.sortedUsers.find(usr => usr.id === this.currentUserSelectedId);
-  }
-
-  createUser() {
-    this.clearMessages();
-    let newUser = new User();
-    newUser.login = this.newUserForm.get('newUserLogin').value;
-    newUser.name = this.newUserForm.get('newUserName').value;
-    newUser.lastName = this.newUserForm.get('newUserLastName').value;
-    newUser.email = this.newUserForm.get('newUserEmail').value;
-    newUser.bookLimit = this.newUserForm.get('newUserBookLimit').value;
-    this.dataService.createUser(newUser, this.newUserForm.get('newUserPassword').value).subscribe(
-      user => {
-        this.getUsers();
-        this.successMessage = `Pomyślnie utworzono użytkownika ${user.login}`;
-      }, error => {
-        if (error.error.status === 4444) {
-          this.infoMessage = error.error.error;
-        }
-      }
-    );
-  }
-
-  deleteUser() {
-    this.clearMessages();
-    this.dataService.deleteUser(this.getCurrentUser().login).subscribe(
-      user => {
-        this.successMessage = `Pomyślnie usunięto użytkownika ${user.login}`;
-        this.showUserDetails = false;
-        this.getUsers();
-      }
-    );
-  }
-
-  blockUser() {
-    this.clearMessages();
-    this.dataService.blockUser(this.getCurrentUser().login).subscribe(
-      user => {
-        this.getUsers();
-        this.successMessage = `Użytkownik ${user.login} został zablokowany`;
-      }
-    );
-  }
-
-  unBlockUser() {
-    this.clearMessages();
-    this.dataService.unBlockUser(this.getCurrentUser().login).subscribe(
-      user => {
-        this.getUsers();
-        this.successMessage = `Użytkownik ${user.login} został odblokowany`;
       }
     );
   }
@@ -333,6 +223,117 @@ export class AdminPanelComponent implements OnInit {
     );
   }
 
+  getCurrentUser() {
+    return this.sortedUsers.find(usr => usr.id === this.currentUserSelectedId);
+  }
+
+  getUsers() {
+    this.clearMessages();
+    this.dataService.getUsers().subscribe(
+      users => {
+        this.sortedUsers = users;
+      }
+    );
+  }
+
+  getUserBooks(user: User) {
+    this.clearMessages();
+    this.dataService.getUserBooks(user).subscribe(
+      userBooks => {
+        this.userBooks = userBooks;
+        this.router.navigate(['adminPanel']);
+        this.showUserDetails = false;
+        this.showBookDetails = true;
+        this.currentUserSelectedId = user.id;
+        if (this.userBooks.length === 0) {
+          this.infoMessage = `Użytkownik ${user.login} nie wypożyczył żadnych książek`;
+        }
+      }
+    );
+  }
+
+  getUsersDetail(user: User) {
+    this.clearMessages();
+    this.userForm.get('userName').setValue(user.name);
+    this.userForm.get('userLastName').setValue(user.lastName);
+    this.userForm.get('userEmail').setValue(user.email);
+    this.userForm.get('userBookLimit').setValue(user.bookLimit);
+    this.showUserDetails = true;
+    this.showBookDetails = false;
+    this.currentUserSelectedId = user.id;
+  }
+
+  updateUser() {
+    this.clearMessages();
+    let user = this.getCurrentUser();
+    console.log(user);
+    user.name = this.userForm.get('userName').value;
+    user.lastName = this.userForm.get('userLastName').value;
+    user.email = this.userForm.get('userEmail').value;
+    user.bookLimit = this.userForm.get('userBookLimit').value;
+    this.dataService.updateUser(user).subscribe(
+      user => {
+        this.getUsers();
+      }
+    );
+  }
+
+  createUser() {
+    this.clearMessages();
+    let newUser = new User();
+    newUser.login = this.newUserForm.get('newUserLogin').value;
+    newUser.name = this.newUserForm.get('newUserName').value;
+    newUser.lastName = this.newUserForm.get('newUserLastName').value;
+    newUser.email = this.newUserForm.get('newUserEmail').value;
+    newUser.bookLimit = this.newUserForm.get('newUserBookLimit').value;
+    this.dataService.createUser(newUser, this.newUserForm.get('newUserPassword').value).subscribe(
+      user => {
+        this.getUsers();
+        this.successMessage = `Pomyślnie utworzono użytkownika ${user.login}`;
+      }, error => {
+        if (error.error.status === 4444) {
+          this.infoMessage = error.error.error;
+        }
+      }
+    );
+  }
+
+  deleteUser() {
+    this.clearMessages();
+    this.dataService.deleteUser(this.getCurrentUser().login).subscribe(
+      user => {
+        this.successMessage = `Pomyślnie usunięto użytkownika ${user.login}`;
+        this.showUserDetails = false;
+        this.getUsers();
+      }
+    );
+  }
+
+  blockUser() {
+    this.clearMessages();
+    this.dataService.blockUser(this.getCurrentUser().login).subscribe(
+      user => {
+        this.getUsers();
+        this.successMessage = `Użytkownik ${user.login} został zablokowany`;
+      }
+    );
+  }
+
+  unBlockUser() {
+    this.clearMessages();
+    this.dataService.unBlockUser(this.getCurrentUser().login).subscribe(
+      user => {
+        this.getUsers();
+        this.successMessage = `Użytkownik ${user.login} został odblokowany`;
+      }
+    );
+  }
+
+  clearMessages() {
+    this.infoMessage = '';
+    this.successMessage = '';
+  }
+
   sortData(sort: Sort) {
     const data = this.sortedUsers.slice();
     if (!sort.active || sort.direction === '') {
@@ -358,6 +359,8 @@ export class AdminPanelComponent implements OnInit {
       }
     });
   }
+
+
 }
 
 function compare(a: number | string, b: number | string, isAsc: boolean) {

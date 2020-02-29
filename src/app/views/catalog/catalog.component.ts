@@ -1,17 +1,18 @@
-import {Component, OnInit, ViewChild} from '@angular/core';
+import {Component, OnDestroy, OnInit, ViewChild} from '@angular/core';
 import {Book} from '../../model/Book';
 import {DataService} from '../../services/data.service';
 import {MatPaginator, MatTableDataSource} from '@angular/material';
 import {Router} from '@angular/router';
 import {MatSort} from '@angular/material/sort';
 import {AuthService} from "../../services/auth.service";
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-catalog',
   templateUrl: './catalog.component.html',
   styleUrls: ['./catalog.component.css']
 })
-export class CatalogComponent implements OnInit {
+export class CatalogComponent implements OnInit, OnDestroy {
 
   public readonly author = 'author';
   public readonly title = 'title';
@@ -20,6 +21,8 @@ export class CatalogComponent implements OnInit {
   bookDataSource = new MatTableDataSource<Book>();
   displayedColumns: string[] = [this.author, this.title, this.amount];
   currentBookSelectedId;
+  refreshBookSubscription: Subscription;
+  getBooksSubscription: Subscription;
 
   @ViewChild(MatPaginator, {static: true}) paginator: MatPaginator;
   @ViewChild(MatSort, {static: true}) sort: MatSort;
@@ -31,7 +34,7 @@ export class CatalogComponent implements OnInit {
 
   ngOnInit(): void {
     this.getBooks();
-    this.dataService.refreshBooks.subscribe(
+    this.refreshBookSubscription = this.dataService.refreshBooks.subscribe(
       result => {
         this.getBooks();
       }
@@ -39,7 +42,7 @@ export class CatalogComponent implements OnInit {
   }
 
   getBooks() {
-    this.dataService.getBooks().subscribe(
+    this.getBooksSubscription = this.dataService.getBooks().subscribe(
       data => {
         this.bookDataSource = new MatTableDataSource<Book>(data);
         this.bookDataSource.sort = this.sort;
@@ -62,6 +65,11 @@ export class CatalogComponent implements OnInit {
     } else {
       this.router.navigate(['login']);
     }
+  }
+
+  ngOnDestroy(): void {
+    this.getBooksSubscription.unsubscribe();
+    this.refreshBookSubscription.unsubscribe();
   }
 
 

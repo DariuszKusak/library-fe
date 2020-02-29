@@ -1,17 +1,19 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {User} from '../../model/User';
 import {AuthService} from '../../services/auth.service';
 import {DataService} from '../../services/data.service';
 import {ActivatedRoute} from '@angular/router';
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-user-information',
   templateUrl: './user-information.component.html',
   styleUrls: ['./user-information.component.css']
 })
-export class UserInformationComponent implements OnInit {
+export class UserInformationComponent implements OnInit, OnDestroy {
 
   loggedUser: User;
+  getLoggedUserSubscription: Subscription;
 
   constructor(private authService: AuthService,
               private dataService: DataService,
@@ -26,11 +28,16 @@ export class UserInformationComponent implements OnInit {
   }
 
   getLoggedUser(login: string) {
-    this.dataService.getUserByLogin(login).subscribe(
+    this.getLoggedUserSubscription = this.dataService.getUserByLogin(login).subscribe(
       user => {
         this.loggedUser = user;
       }
     );
   }
+
+  ngOnDestroy(): void {
+    this.getLoggedUserSubscription.unsubscribe();
+  }
+
 
 }

@@ -1,17 +1,20 @@
-import {Component, OnInit} from '@angular/core';
+import {Component, OnDestroy, OnInit} from '@angular/core';
 import {Book} from '../../model/Book';
 import {ActivatedRoute, Router} from '@angular/router';
 import {DataService} from '../../services/data.service';
+import {Subscription} from "rxjs";
 
 @Component({
   selector: 'app-book-details',
   templateUrl: './book-details.component.html',
   styleUrls: ['./book-details.component.css']
 })
-export class BookDetailsComponent implements OnInit {
+export class BookDetailsComponent implements OnInit, OnDestroy {
 
   message = '';
   detailedBook;
+  getBookSubscription: Subscription;
+  borrowBookSubscription: Subscription;
 
   constructor(private dataService: DataService,
               private router: Router,
@@ -27,7 +30,7 @@ export class BookDetailsComponent implements OnInit {
   }
 
   private getBookById(id: number) {
-    this.dataService.getBookById(id).subscribe(
+    this.getBookSubscription = this.dataService.getBookById(id).subscribe(
       detailedBook => {
         this.detailedBook = detailedBook;
       }
@@ -35,7 +38,7 @@ export class BookDetailsComponent implements OnInit {
   }
 
   borrowBook(book: Book) {
-    this.dataService.borrowBook(book).subscribe(
+    this.borrowBookSubscription = this.dataService.borrowBook(book).subscribe(
       next => {
         this.router.navigate(['usersBooks']);
       }, (error) => {
@@ -52,5 +55,11 @@ export class BookDetailsComponent implements OnInit {
   returnToCatalog() {
     this.router.navigate(['catalog']);
   }
+
+  ngOnDestroy(): void {
+    this.getBookSubscription.unsubscribe();
+    this.borrowBookSubscription.unsubscribe();
+  }
+
 
 }

@@ -9,7 +9,7 @@ import {Subscription} from "rxjs";
   templateUrl: './mail.component.html',
   styleUrls: ['./mail.component.css']
 })
-export class MailComponent implements OnInit {
+export class MailComponent implements OnInit, OnDestroy {
 
   constructor(private dataService: DataService) {
   }
@@ -18,6 +18,7 @@ export class MailComponent implements OnInit {
   messageError = '';
   isSending = false;
   messageSent = false;
+  mailSubscription: Subscription;
 
   ngOnInit() {
   }
@@ -53,6 +54,10 @@ export class MailComponent implements OnInit {
   clearMessages() {
     this.messageSuccess = '';
     this.messageError = '';
+  }
+
+  ngOnDestroy(): void {
+    this.mailSubscription.unsubscribe();
   }
 
 
