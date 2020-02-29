@@ -1,29 +1,81 @@
 <div class="container">
-  <div class="row">
-    <div class="alert alert-primary" role="alert">{{message}}</div>
+  <div *ngIf="errorMessage">
+    <div class="alert alert-danger" role="alert">{{errorMessage}}</div>
   </div>
-  <div class="row">
-    <form #userForm="ngForm">
-      <div class="form-group">
-        <mat-form-field class="example-full-width">
-          <mat-label>login</mat-label>
-          <input matInput class="search-field" id="login" [(ngModel)]="login" name="login"/>
-        </mat-form-field>
-      </div>
-      <div class="form-group">
-        <mat-form-field class="example-full-width">
-          <mat-label>password</mat-label>
-          <input matInput [type]="hidePassword ? 'password' : 'text'" class="search-field" id="password" [(ngModel)]="password" name="password"/>
-          <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'" [attr.aria-pressed]="hidePassword">
-            <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
-          </button>
-        </mat-form-field>
-      </div>
-    </form>
+  <div *ngIf="successMessage">
+    <div class="alert alert-success" role="alert">{{successMessage}}</div>
   </div>
-  <div class="row">
-    <button mat-stroked-button color="primary" (click)="onLogin()">Login</button>
+  <div class="mt-5">
+    <mat-radio-group [(ngModel)]="logIn">
+      <mat-radio-button [value]="true">Zaloguj</mat-radio-button>
+      <mat-radio-button [value]="false">Załóż konto</mat-radio-button>
+    </mat-radio-group>
   </div>
+  <div class="mt-3" *ngIf="logIn">
+    <div>
+      <form [formGroup]="loginForm">
+        <div class="form-group">
+          <mat-form-field class="example-full-width">
+            <mat-label>Login</mat-label>
+            <input matInput class="search-field" formControlName="login"/>
+          </mat-form-field>
+        </div>
+        <div class="form-group">
+          <mat-form-field class="example-full-width">
+            <mat-label>Hasło</mat-label>
+            <input matInput [type]="hidePassword ? 'password' : 'text'" class="search-field" formControlName="password"/>
+            <button mat-icon-button matSuffix (click)="hidePassword = !hidePassword" [attr.aria-label]="'Hide password'"
+                    [attr.aria-pressed]="hidePassword">
+              <mat-icon>{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+            </button>
+          </mat-form-field>
+        </div>
+        <div>
+          <button mat-stroked-button color="primary" (click)="onLogin()">Zaloguj</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div *ngIf="!logIn">
+    <div>
+      <form [formGroup]="newAccountForm">
+        <div class="row" *ngIf="isSending">
+          <mat-spinner diameter="50"></mat-spinner>
+        </div>
+        <div class="mt-3">
+          <mat-form-field class="example-full-width">
+            <mat-label>Login</mat-label>
+            <input matInput class="search-field" formControlName="newAccountLogin"/>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field class="example-full-width">
+            <mat-label>Imię</mat-label>
+            <input matInput class="search-field" formControlName="newAccountName"/>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field class="example-full-width">
+            <mat-label>Nazwisko</mat-label>
+            <input matInput class="search-field" formControlName="newAccountLastName"/>
+          </mat-form-field>
+        </div>
+        <div>
+          <mat-form-field class="example-full-width">
+            <mat-label>Email</mat-label>
+            <input matInput class="search-field" formControlName="newAccountEmail"/>
+          </mat-form-field>
+        </div>
+        <div class="mt-3">
+          <div>
+            <button mat-stroked-button color="primary" (click)="createAccount()">Załóż konto</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+
 </div>
 
 

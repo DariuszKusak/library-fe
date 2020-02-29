@@ -35,6 +35,8 @@ import {BookDetailsComponent} from './views/book-details/book-details.component'
 import {AdminGuardService} from './guards/admin-guard.service';
 import {AdminUserGuardService} from './guards/admin-user-guard.service';
 import {UserGuardService} from './guards/user-guard.service';
+import { MailComponent } from './views/mail/mail.component';
+import {MatProgressSpinnerModule} from "@angular/material/progress-spinner";
 
 const routes: Routes = [
   {path: '', component: InformationComponent},
@@ -44,6 +46,7 @@ const routes: Routes = [
   {path: 'login', component: LoginComponent},
   {path: 'userInformation', component: UserInformationComponent, canActivate: [AdminUserGuardService]},
   {path: 'bookDetails', component: BookDetailsComponent, canActivate: [UserGuardService]},
+  {path: 'mail', component: MailComponent}
 ];
 
 @NgModule({
@@ -56,7 +59,8 @@ const routes: Routes = [
     AdminPanelComponent,
     LoginComponent,
     UserInformationComponent,
-    BookDetailsComponent
+    BookDetailsComponent,
+    MailComponent
   ],
   imports: [
     BrowserModule,
@@ -80,7 +84,8 @@ const routes: Routes = [
     MatIconModule,
     MatToolbarModule,
     MatSidenavModule,
-    MatPaginatorModule
+    MatPaginatorModule,
+    MatProgressSpinnerModule
 
   ],
   providers: [],

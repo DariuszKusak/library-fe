@@ -25,7 +25,7 @@
     </mat-tree>
   </div>
 
-  <div class="row mt-5" *ngIf=" activeNode && activeNode.name === ADD_USER">
+  <div class="mt-5" *ngIf=" activeNode && activeNode.name === ADD_USER">
     <form [formGroup]="newUserForm">
       <div class="row">
         <mat-form-field class="example-full-width">
@@ -76,7 +76,7 @@
     </form>
   </div>
 
-  <div class="row mt-5" *ngIf=" activeNode && activeNode.name === ADD_BOOK">
+  <div class="mt-5" *ngIf=" activeNode && activeNode.name === ADD_BOOK">
     <form [formGroup]="newBookForm">
       <div class="row">
         <mat-form-field class="example-full-width">

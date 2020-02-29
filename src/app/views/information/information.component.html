@@ -1,7 +1,12 @@
 <div class="container">
   <div class="row">
     <div class="col">
-      <h1>Nasza misja</h1>
+      <div class="row">
+        <div class="col"><h1>Nasza misja</h1></div>
+        <div class="col">
+          <button mat-stroked-button color="primary" class="mt-2 float-right" (click)="sendMail()">Napisz do nas</button>
+        </div>
+      </div>
       Rozwijanie i zaspokajanie potrzeb czytelniczych mieszkańców dzielnicy Śródmieście i Miasta Stołecznego Warszawy
       oraz upowszechnianie wiedzy i rozwoju kultury.
       Zapewnienie Czytelnikom dostępu do wszelkiego rodzaju informacji.
@@ -21,56 +26,6 @@
     </div>
     <div class="col">
       <div class="image2"></div>
-    </div>
-  </div>
-  <div class="row mt-5">
-    <div class="col-6">
-        <mat-accordion>
-          <mat-expansion-panel>
-            <mat-expansion-panel-header>
-              <mat-panel-title>Napisz do nas</mat-panel-title>
-              <mat-panel-description>examples123.dk@gmail.com</mat-panel-description>
-            </mat-expansion-panel-header>
-            <form #mailForm="ngForm">
-              <div class="form-group">
-                <mat-form-field class="example-full-width">
-                  <mat-label>Imię</mat-label>
-                  <input matInput class="search-field" id="name" [(ngModel)]="name" name="name"/>
-                </mat-form-field>
-              </div>
-              <div class="form-group">
-                <mat-form-field class="example-full-width">
-                  <mat-label>Nazwisko</mat-label>
-                  <input matInput class="search-field" id="surname" [(ngModel)]="surname" name="surname"/>
-                </mat-form-field>
-              </div>
-              <div class="form-group">
-                <mat-form-field class="example-full-width">
-                  <mat-label>Temat</mat-label>
-                  <input matInput class="search-field" id="subject" [(ngModel)]="subject" name="subject"/>
-                </mat-form-field>
-              </div>
-              <div class="form-group">
-                <mat-form-field class="example-full-width">
-                  <mat-label>Wiadomość</mat-label>
-                  <textarea matInput
-                            cdkTextareaAutosize
-                            #autosize="cdkTextareaAutosize"
-                            cdkAutosizeMinRows="1"
-                            cdkAutosizeMaxRows="5"
-                            id="msg" [(ngModel)]="msg" name="msg"></textarea>
-                </mat-form-field>
-                <hr/>
-              </div>
-            </form>
-            <button mat-stroked-button color="primary" (click)="onMail()">Wyślij</button>
-          </mat-expansion-panel>
-        </mat-accordion>
-    </div>
-  </div>
-  <div class="row mt-5">
-    <div class="col">
-      <mat-toolbar>ul.Długa 12 | 30-834 | Kraków | +48(12)6589155</mat-toolbar>
     </div>
   </div>
 </div>

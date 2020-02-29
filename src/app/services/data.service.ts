@@ -5,6 +5,7 @@ import {environment} from '../../environments/environment';
 import {map} from 'rxjs/operators';
 import {Observable} from 'rxjs';
 import {User} from '../model/User';
+import {Mail} from "../model/Mail";
 
 @Injectable({
   providedIn: 'root'
@@ -55,6 +56,10 @@ export class DataService {
     return this.http.post<User>(environment.restUrl + 'users', user, {headers, withCredentials: true});
   }
 
+  createAccount(user: User): Observable<User> {
+    return this.http.post<User>(environment.restUrl + 'accounts', user, {withCredentials: true});
+  }
+
   updateUser(user: User): Observable<User> {
     return this.http.put<User>(environment.restUrl + 'users', user, {withCredentials: true});
   }
@@ -79,10 +84,14 @@ export class DataService {
     return this.http.put<User>(environment.restUrl + 'users/enable/' + login, null, {withCredentials: true});
   }
 
+  sendMail(mail: Mail) {
+    return this.http.post<Mail>(environment.restUrl + 'mail', mail, {withCredentials: true});
+  }
+
   validateUser(name: string, password: string): Observable<{ result: string }> {
     const authData = btoa(`${name}:${password}`);
-    const headers = new HttpHeaders().append('Authorization', 'Basic ' + authData).append("X-Requested-With", "XMLHttpRequest");
-    return this.http.get<{ result: string }>(environment.restUrl + 'basicAuth/validate', {headers: headers, withCredentials: true});
+    const headers = new HttpHeaders().append('Authorization', 'Basic ' + authData).append('X-Requested-With', 'XMLHttpRequest');
+    return this.http.get<{ result: string }>(environment.restUrl + 'basicAuth/validate', {headers, withCredentials: true});
   }
 
   logout(): Observable<string> {
