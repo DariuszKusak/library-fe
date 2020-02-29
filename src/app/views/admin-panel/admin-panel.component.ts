@@ -253,6 +253,8 @@ export class AdminPanelComponent implements OnInit {
     this.clearMessages();
     this.dataService.deleteUser(this.getCurrentUser().login).subscribe(
       user => {
+        this.successMessage = `Pomyślnie usunięto użytkownika ${user.login}`;
+        this.showUserDetails = false;
         this.getUsers();
       }
     );
